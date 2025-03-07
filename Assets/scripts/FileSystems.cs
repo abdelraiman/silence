@@ -18,7 +18,7 @@ public class FileSystems : MonoBehaviour
             Directory.CreateDirectory(Path.Combine(Application.dataPath, "StreamingAssets"));
             Debug.Log("Added streamingAssetsPath and can be found at" + streamingAssetsPath);
         }
-        if (File.Exists(Path.Combine(Application.streamingAssetsPath, "body matirial")))
+        if (File.Exists(Path.Combine(Application.streamingAssetsPath, "body matirial.mat")))
         {
             Debug.Log("he has SKIN!");
         }
