@@ -18,7 +18,23 @@ public class FileSystems : MonoBehaviour
             Directory.CreateDirectory(Path.Combine(Application.dataPath, "StreamingAssets"));
             Debug.Log("Added streamingAssetsPath and can be found at" + streamingAssetsPath);
         }
+        if (File.Exists(Path.Combine(Application.streamingAssetsPath, "body matirial")))
+        {
+            Debug.Log("he has SKIN!");
+        }
+        else
+        {
+            Debug.Log("APLLAYING SKIN!!!");
+            Material newMat = new Material(Shader.Find("Standard"));
+            newMat.color = Color.blue;
 
+            GameObject[] objects = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject obj in objects)
+            {
+                obj.GetComponent<Renderer>().material = newMat;
+            }
+
+        }
     }
 
     // Update is called once per frame
