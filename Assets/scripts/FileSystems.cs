@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class FileSystems : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public string filename = "sm.mat";  
+    
     void Start()
     {
         string streamingAssetsPath = Application.streamingAssetsPath;
@@ -37,7 +39,7 @@ public class FileSystems : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
         

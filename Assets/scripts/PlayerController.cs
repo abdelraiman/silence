@@ -8,16 +8,19 @@ public class PlayerController : MonoBehaviour
     [Header("system")]
     float horizontalInput;
     float verticalInput;
+    public float gravity;
+
     public movmentstate state;
     Vector3 moveDirection;
     Rigidbody rb;
     public LayerMask Ground;
-    public float gravity;
+
     private string CombinedFilePath;
     public string FileName = "jump.wav";
     public string FolderName = "audio";
+
     public AudioSource audioSource;
-    public AudioClip clip;
+    private AudioClip clip;
 
     [Header("player")]
     public Transform orientation;
@@ -64,15 +67,6 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         CombinedFilePath = Path.Combine(Application.streamingAssetsPath,FolderName,FileName);
-        if (clip != null && audioSource != null)
-        {
-            audioSource.clip = clip;
-            audioSource.Play();
-        }
-        else
-        {
-            Debug.LogError("AudioSource or Clip is missing!");
-        }
 
     startYScale = transform.localScale.y;
 
@@ -80,6 +74,14 @@ public class PlayerController : MonoBehaviour
         rb.freezeRotation = true;
 
         canJump = true;
+
+
+        if (audioSource == null)
+        {
+            Debug.Log("erm no audio source?");
+            return;
+        }
+        loadsoundfromfile();
     }
 
     void Update()
@@ -173,7 +175,7 @@ public class PlayerController : MonoBehaviour
 
     void jump()
     {
-        audioSource.Play();
+        playsound();
         exitingslop = true;
 
         if (crouthing)
@@ -230,5 +232,39 @@ public class PlayerController : MonoBehaviour
     void Gravity()
     {
         rb.AddForce(Vector3.down * gravity, ForceMode.Impulse);
+    }
+
+    void loadsoundfromfile()
+    {
+        if (File.Exists(CombinedFilePath)) 
+        {
+            byte[] audio = File.ReadAllBytes(CombinedFilePath);
+
+            float[] FloatArray = new float[audio.Length /2];
+
+            for (int i = 0; i < FloatArray.Length; i++)
+            {
+                short bitvalue = System.BitConverter.ToInt16(audio, i * 2);
+
+                FloatArray[i] = bitvalue / 3768.0f;
+            }
+
+            clip = AudioClip.Create("Jump", FloatArray.Length, 1, 44800, false);
+
+            clip.SetData(FloatArray, 0);
+        }
+        else
+        {
+            Debug.Log("lier lier files not thier");
+        }
+    }
+
+    void playsound()
+    {
+        if (clip == null || audioSource == null)
+        {
+            return;
+        }
+        audioSource.PlayOneShot(clip);
     }
 }
