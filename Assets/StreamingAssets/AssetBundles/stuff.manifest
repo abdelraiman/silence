@@ -1,0 +1,38 @@
+ManifestFileVersion: 0
+CRC: 458906728
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: c982098dc3513a747a098985206869bd
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: ed937da28471200e64c32894946f65c1
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: c982098dc3513a747a098985206869bd
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 65
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: ab9075e31d83d7149bc8acb77855ab2a, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Prefabs/wall jump.prefab
+Dependencies: []

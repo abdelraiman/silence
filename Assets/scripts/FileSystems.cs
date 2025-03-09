@@ -9,10 +9,9 @@ public class FileSystems : MonoBehaviour
     public string filename = "wall.jpeg";
     public string folderpath = Application.streamingAssetsPath;
     private string CombinedFilePathLocation;
-    
+   
     void Start()
     {
-
         CombinedFilePathLocation = Path.Combine(folderpath, filename);
 
         Laodtextxr();
@@ -46,13 +45,11 @@ public class FileSystems : MonoBehaviour
 
         }
     }
-
-    
     void Laodtextxr()
     {
         if (File.Exists(Path.Combine(Application.streamingAssetsPath, "wall.jpeg")))
         {
-            Debug.Log("i see it");
+            Debug.Log("wall looks goof");
         }
 
         if (File.Exists(Path.Combine(Application.streamingAssetsPath, "wall.jpeg"))) 
@@ -63,11 +60,11 @@ public class FileSystems : MonoBehaviour
             texture.LoadImage(imagebytes);
             GetComponent<Renderer>().material.mainTexture = texture;
 
-           //GameObject[] objects = GameObject.FindGameObjectsWithTag("wall");
-           //foreach (GameObject obj in objects)
-           //{
-           //    obj.GetComponent<Renderer>().material.mainTexture = texture;
-           //}
+          //GameObject[] objects = GameObject.FindGameObjectsWithTag("wall");
+          //foreach (GameObject obj in objects)
+          //{
+          //   obj.GetComponent<Renderer>().material.mainTexture = texture;
+          //}
             Debug.Log("WALLED IS WALL");
         }
         else
