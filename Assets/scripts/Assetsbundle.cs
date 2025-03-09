@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Assetsbundle : MonoBehaviour
 {
-    string folderPath = "assetsbundle";
+    string folderPath = "AssetBundles";
     string fileName = "stuff";
     string combinedPath;
 
