@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -12,6 +13,11 @@ public class PlayerController : MonoBehaviour
     Rigidbody rb;
     public LayerMask Ground;
     public float gravity;
+    private string CombinedFilePath;
+    public string FileName = "jump.wav";
+    public string FolderName = "audio";
+    public AudioSource audioSource;
+    public AudioClip clip;
 
     [Header("player")]
     public Transform orientation;
@@ -27,8 +33,7 @@ public class PlayerController : MonoBehaviour
     public float jumpF;
     public float jumpC;
     public float airM;
-    public AudioSource audioSource;
-    public AudioClip clip;
+    
 
     [Header("crouching")]
     public float crouchspeed;
@@ -58,6 +63,7 @@ public class PlayerController : MonoBehaviour
     }
     void Start()
     {
+        CombinedFilePath = Path.Combine(Application.streamingAssetsPath,FolderName,FileName);
         if (clip != null && audioSource != null)
         {
             audioSource.clip = clip;
