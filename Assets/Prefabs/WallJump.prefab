@@ -115,7 +115,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4238400117750169269}
   m_Layer: 0
-  m_Name: wall jump
+  m_Name: WallJump
   m_TagString: wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

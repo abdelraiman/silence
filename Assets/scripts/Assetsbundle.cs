@@ -15,6 +15,22 @@ public class Assetsbundle : MonoBehaviour
     void Start()
     {
         LoadAssetsBunndle();
+        Loadprefab();
+    }
+
+    void Loadprefab()
+    {
+        if (stuf == null)
+        {
+            return; 
+        }
+
+        GameObject WallJumpprefab = stuf.LoadAsset<GameObject>("WallJump");   
+        if (WallJumpprefab != null)
+        {
+            Instantiate(WallJumpprefab);
+        }
+        
     }
 
     void LoadAssetsBunndle()
