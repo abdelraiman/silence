@@ -6,10 +6,17 @@ using UnityEngine.Rendering;
 
 public class FileSystems : MonoBehaviour
 {
-    public string filename = "sm.mat";  
+    public string filename = "wall.jpeg";
+    public string folderpath = Application.streamingAssetsPath;
+    private string CombinedFilePathLocation;
     
     void Start()
     {
+
+        CombinedFilePathLocation = Path.Combine(folderpath, filename);
+
+        Laodtextxr();
+
         string streamingAssetsPath = Application.streamingAssetsPath;
         if (Directory.Exists(streamingAssetsPath))
         {
@@ -20,6 +27,7 @@ public class FileSystems : MonoBehaviour
             Directory.CreateDirectory(Path.Combine(Application.dataPath, "StreamingAssets"));
             Debug.Log("Added streamingAssetsPath and can be found at" + streamingAssetsPath);
         }
+
         if (File.Exists(Path.Combine(Application.streamingAssetsPath, "body matirial.mat")))
         {
             Debug.Log("he has SKIN!");
@@ -40,8 +48,31 @@ public class FileSystems : MonoBehaviour
     }
 
     
-    void Update()
+    void Laodtextxr()
     {
-        
+        if (File.Exists(Path.Combine(Application.streamingAssetsPath, "wall.jpeg")))
+        {
+            Debug.Log("i see it");
+        }
+
+        if (File.Exists(Path.Combine(Application.streamingAssetsPath, "wall.jpeg"))) 
+        {
+            byte[] imagebytes = File.ReadAllBytes(CombinedFilePathLocation);
+
+            Texture2D texture = new Texture2D(2, 2);
+            texture.LoadImage(imagebytes);
+            GetComponent<Renderer>().material.mainTexture = texture;
+
+           //GameObject[] objects = GameObject.FindGameObjectsWithTag("wall");
+           //foreach (GameObject obj in objects)
+           //{
+           //    obj.GetComponent<Renderer>().material.mainTexture = texture;
+           //}
+            Debug.Log("WALLED IS WALL");
+        }
+        else
+        {
+            Debug.Log("?what texure");
+        }
     }
 }
