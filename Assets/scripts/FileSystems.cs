@@ -49,7 +49,7 @@ public class FileSystems : MonoBehaviour
     {
         if (File.Exists(Path.Combine(Application.streamingAssetsPath, "wall.jpeg")))
         {
-            Debug.Log("wall looks goof");
+            Debug.Log("wall looks good");
         }
 
         if (File.Exists(Path.Combine(Application.streamingAssetsPath, "wall.jpeg"))) 
