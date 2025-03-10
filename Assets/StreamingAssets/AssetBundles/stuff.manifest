@@ -1,15 +1,15 @@
 ManifestFileVersion: 0
-CRC: 458906728
+CRC: 1614194822
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: c982098dc3513a747a098985206869bd
+    Hash: 8df46c9d0f8fe3a435bb087112d5d708
   TypeTreeHash:
     serializedVersion: 2
     Hash: ed937da28471200e64c32894946f65c1
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: c982098dc3513a747a098985206869bd
+    Hash: 8df46c9d0f8fe3a435bb087112d5d708
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -34,5 +34,5 @@ ClassTypes:
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
-- Assets/Prefabs/wall jump.prefab
+- Assets/Prefabs/Wall.prefab
 Dependencies: []

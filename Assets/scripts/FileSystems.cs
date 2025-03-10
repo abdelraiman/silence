@@ -58,13 +58,13 @@ public class FileSystems : MonoBehaviour
 
             Texture2D texture = new Texture2D(2, 2);
             texture.LoadImage(imagebytes);
-            GetComponent<Renderer>().material.mainTexture = texture;
+            //GetComponent<Renderer>().material.mainTexture = texture;
 
-          //GameObject[] objects = GameObject.FindGameObjectsWithTag("wall");
-          //foreach (GameObject obj in objects)
-          //{
-          //   obj.GetComponent<Renderer>().material.mainTexture = texture;
-          //}
+          GameObject[] objects = GameObject.FindGameObjectsWithTag("wall");
+          foreach (GameObject obj in objects)
+          {
+             obj.GetComponent<Renderer>().material.mainTexture = texture;
+          }
             Debug.Log("WALLED IS WALL");
         }
         else

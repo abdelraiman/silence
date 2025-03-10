@@ -9,10 +9,10 @@ public class Assetsbundle : MonoBehaviour
     string fileName = "stuff";
     string combinedPath;
 
-    public AssetBundle stuf; 
+    private AssetBundle stuff; 
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         LoadAssetsBunndle();
         Loadprefab();
@@ -20,17 +20,27 @@ public class Assetsbundle : MonoBehaviour
 
     void Loadprefab()
     {
-        if (stuf == null)
+        Debug.Log("starting load"); 
+
+        if (stuff == null)
         {
+            Debug.Log("not fabbing");
             return; 
         }
 
-        GameObject WallJumpprefab = stuf.LoadAsset<GameObject>("WallJump");   
-        if (WallJumpprefab != null)
+        Debug.Log("fabbing");
+
+        GameObject Wallprefab = stuff.LoadAsset<GameObject>("Wall");
+
+        if (Wallprefab != null)
         {
-            Instantiate(WallJumpprefab);
+          Instantiate(Wallprefab, Vector3.up * 2, Quaternion.identity);
+          Debug.Log("wall is there");
         }
-        
+        if (Wallprefab == null)
+        {
+            Debug.Log("NO WALL!!!");
+        }
     }
 
     void LoadAssetsBunndle()
@@ -39,7 +49,7 @@ public class Assetsbundle : MonoBehaviour
 
         if (File.Exists(combinedPath))
         {
-            stuf = AssetBundle.LoadFromFile(combinedPath);
+            stuff = AssetBundle.LoadFromFile(combinedPath);
             Debug.Log("ahuh stuff is here");
         }
         else
