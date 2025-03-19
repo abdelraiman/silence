@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     Vector3 moveDirection;
     Rigidbody rb;
     public LayerMask Ground;
+    public LayerMask Enemy;
 
     private string CombinedFilePath;
     public string FileName = "jump.wav";
@@ -36,15 +37,18 @@ public class PlayerController : MonoBehaviour
     public float jumpF;
     public float jumpC;
     public float airM;
-    
 
     [Header("crouching")]
     public float crouchspeed;
     public float crouchYScale;
     float startYScale;
 
+    [Header("takedown")]
+
+
     [Header("bool")]
     public bool grounded;
+    public bool takedown;
     public bool canJump;
     public bool crouthing;
 
@@ -87,6 +91,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         grounded = Physics.Raycast(transform.position, Vector3.down, playerhight * 0.5f + 0.2f, Ground);
+        takedown = Physics.Raycast(transform.position, Vector3.forward, 1f, Enemy);
         MyInputs();
         speedCom();
         states();
