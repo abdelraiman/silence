@@ -7,16 +7,44 @@ public class takedownscript : MonoBehaviour
     [Header("takedown")]
     public bool takedown;
     public LayerMask Enemy;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public float num = 1;
+    public KeyCode interact = KeyCode.E;
 
     // Update is called once per frame
     void Update()
     {
-        takedown = Physics.Raycast(transform.position, Vector3.forward, 1f, Enemy);
+        
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.forward, out hit, num))
+        {
+            if (hit.collider.tag != "enemy")
+            {
+                takedown = false;
+            }
+            else
+            {
+                takedown = true;
+            }
+        }
+        else
+        {
+            off();
+        }
+
+        void off()
+        {
+            takedown = false;
+        }
+
+        if (Input.GetKeyDown(interact) && takedown)
+        {
+            Debug.Log("assasinated");
+        }
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(transform.position, transform.forward * num);
     }
 }
