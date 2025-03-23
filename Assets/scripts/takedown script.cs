@@ -9,8 +9,13 @@ public class takedownscript : MonoBehaviour
     public LayerMask Enemy;
     public float num = 1;
     public KeyCode interact = KeyCode.E;
+    public Animator anim;
+    
+    void Start()
+    {
+        //anim = GetComponent<Animator>();
+    }
 
-    // Update is called once per frame
     void Update()
     {
         
@@ -39,6 +44,7 @@ public class takedownscript : MonoBehaviour
         if (Input.GetKeyDown(interact) && takedown)
         {
             Debug.Log("assasinated");
+            anim.SetTrigger("TakedownTrigger");
         }
     }
 
