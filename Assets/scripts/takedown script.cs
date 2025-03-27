@@ -19,6 +19,21 @@ public class takedownscript : MonoBehaviour
 
     void Update()
     {
+        detect();
+
+        if (Input.GetKeyDown(interact) && takedown)
+        {
+            Debug.Log("assasinated");
+            if (enemy != null)
+            {
+                enemy.GetComponentInParent<enemyTakedown>().tookdown();
+                Debug.Log("enemy is there");
+            }
+        }
+    }
+
+    private void detect()
+    {
         if (Physics.Raycast(transform.position, transform.forward, out hit, num))
         {
             if (hit.collider.tag != "enemy")
@@ -39,16 +54,6 @@ public class takedownscript : MonoBehaviour
         void off()
         {
             takedown = false;
-        }
-
-        if (Input.GetKeyDown(interact) && takedown)
-        {
-            Debug.Log("assasinated");
-            if (enemy != null)
-            {
-                enemy.GetComponentInParent<enemyTakedown>().tookdown();
-                Debug.Log("enemy is there");
-            }
         }
     }
 
