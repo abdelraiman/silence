@@ -7,7 +7,7 @@ public class takedownscript : MonoBehaviour
     [Header("takedown")]
     public bool takedown;
     public LayerMask Enemy;
-    public float num = 1;
+    public float num;
     public KeyCode interact = KeyCode.E;
     RaycastHit hit;
     public GameObject enemy;
