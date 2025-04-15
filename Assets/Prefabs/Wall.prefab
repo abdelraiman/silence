@@ -116,7 +116,7 @@ GameObject:
   - component: {fileID: 4238400117750169269}
   m_Layer: 0
   m_Name: Wall
-  m_TagString: wall
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -362,7 +362,6 @@ GameObject:
   - component: {fileID: 48180809411476966}
   - component: {fileID: 330262828346461370}
   - component: {fileID: 4577969381954106879}
-  - component: {fileID: 9035378424593969476}
   m_Layer: 3
   m_Name: Cube (1)
   m_TagString: wall
@@ -456,17 +455,3 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &9035378424593969476
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6177314935791026514}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab9075e31d83d7149bc8acb77855ab2a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  filename: wall.jpeg
-  folderpath: C:/Users/user/Desktop/silence/Assets/StreamingAssets
