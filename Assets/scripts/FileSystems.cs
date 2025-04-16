@@ -38,6 +38,7 @@ public class FileSystems : MonoBehaviour
           GameObject[] objects = GameObject.FindGameObjectsWithTag("wall");
           foreach (GameObject obj in objects)
           {
+                Debug.Log(obj.name);
              obj.GetComponent<Renderer>().material.mainTexture = texture;
           }
             Debug.Log("WALLED IS WALL");

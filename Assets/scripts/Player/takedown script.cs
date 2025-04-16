@@ -7,7 +7,7 @@ public class takedownscript : MonoBehaviour
     [Header("takedown")]
     public bool takedown;
     public LayerMask Enemy;
-    public float num;
+    public float num; //distance of raycast
     public KeyCode interact = KeyCode.E;
     RaycastHit hit;
     public GameObject enemy;
@@ -36,14 +36,16 @@ public class takedownscript : MonoBehaviour
     {
         if (Physics.Raycast(transform.position, transform.forward, out hit, num))
         {
-            if (hit.collider.tag != "enemy")
+            Debug.Log(hit.transform.name);
+
+            if (hit.collider.tag == "enemy")
             {
                 enemy = hit.collider.gameObject;
-                takedown = false;
+                takedown = true;
             }
             else
             {
-                takedown = true;
+                takedown = false;
             }
         }
         else
