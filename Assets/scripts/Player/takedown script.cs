@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class takedownscript : MonoBehaviour
 {
@@ -27,6 +28,7 @@ public class takedownscript : MonoBehaviour
             if (enemy != null)
             {
                 enemy.GetComponentInParent<enemyTakedown>().tookdown();
+                enemy.GetComponentInParent<NavMeshAgent>().isStopped=true;
                 Debug.Log("enemy is there");
             }
         }
@@ -36,7 +38,7 @@ public class takedownscript : MonoBehaviour
     {
         if (Physics.Raycast(transform.position, transform.forward, out hit, num))
         {
-            Debug.Log(hit.transform.name);
+            //Debug.Log(hit.transform.name);
 
             if (hit.collider.tag == "enemy")
             {
