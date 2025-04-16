@@ -43,10 +43,10 @@ public class PlayerController : MonoBehaviour
     float startYScale;
 
     [Header("bool")]
-    public bool grounded;
-    public bool canJump;
-    public bool crouthing;
-
+    [SerializeField]private bool grounded;
+    [SerializeField]private bool canJump;
+    [SerializeField]private bool crouthing;
+    [SerializeField]private bool exitingslop;
     [Header("keybinds")]
     public KeyCode jumpkey = KeyCode.Space;
     public KeyCode sprintkey = KeyCode.LeftShift;
@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour
     [Header("slope")]
     public float maxSlopeangl;
     private RaycastHit slopeHit;
-    public bool exitingslop;
+    
     public enum movmentstate
     {
         walking,

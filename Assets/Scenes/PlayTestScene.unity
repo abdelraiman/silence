@@ -509,11 +509,11 @@ MonoBehaviour:
   grounded: 0
   canJump: 0
   crouthing: 0
+  exitingslop: 0
   jumpkey: 32
   sprintkey: 304
   crouchkey: 306
   maxSlopeangl: 40
-  exitingslop: 0
 --- !u!23 &167252870
 MeshRenderer:
   m_ObjectHideFlags: 0
