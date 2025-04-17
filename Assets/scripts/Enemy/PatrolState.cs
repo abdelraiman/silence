@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 public class PatrolState : BaseState
 {
     public int waypointindex;
+    public float wait;
 
     public override void Enter()
     {
@@ -23,15 +24,21 @@ public class PatrolState : BaseState
     {
         if (enemy.Agent.remainingDistance < 0.2f)
         {
-            if (waypointindex < enemy.paath.waypoints.Count - 1)
+            wait += Time.deltaTime;
+            if (wait > 3) 
             {
-                waypointindex++;
+                if (waypointindex < enemy.paath.waypoints.Count - 1)
+                {
+                    waypointindex++;
+                }
+                else
+                {
+                    waypointindex = 0;
+                }
+                enemy.Agent.SetDestination(enemy.paath.waypoints[waypointindex].position);
+                wait = 0;
             }
-            else
-            {
-                waypointindex = 0;
-            }
-            enemy.Agent.SetDestination(enemy.paath.waypoints[waypointindex].position);
+            
         }
     }
 }

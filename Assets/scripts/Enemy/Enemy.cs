@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
    
     [SerializeField] private string curentstate;
     public path paath;
+
     void Start()
     {
         stateMachine = GetComponent<StateMachine>();
