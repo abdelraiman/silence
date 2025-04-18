@@ -14,6 +14,10 @@ public class PatrolState : BaseState
     public override void Preform()
     {
         PatrolCycle();
+        if (enemy.canseeplayer())
+        {
+            stateMachine.Changstate(new attackState());
+        }
     }
 
     public override void Exit()
@@ -25,7 +29,7 @@ public class PatrolState : BaseState
         if (enemy.Agent.remainingDistance < 0.2f)
         {
             wait += Time.deltaTime;
-            if (wait > 3) 
+            if (wait > 2) 
             {
                 if (waypointindex < enemy.paath.waypoints.Count - 1)
                 {
