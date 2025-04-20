@@ -12,7 +12,7 @@ public class Enemy : MonoBehaviour
     public path paath;
     [SerializeField] private GameObject player;
     public NavMeshAgent Agent { get => agent; }
-
+    public GameObject Player { get => player; }
     [Header("sight values")]
     public float sightdistance = 20f;
     public float fov = 60;

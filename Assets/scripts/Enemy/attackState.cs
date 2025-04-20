@@ -20,6 +20,7 @@ public class attackState : BaseState
         {
             looseplayertimer = 0;
             movetimer += Time.deltaTime;
+            enemy.transform.LookAt(enemy.Player.transform);
             if (movetimer > Random.Range(3,7))
             {
                 enemy.Agent.SetDestination(enemy.transform.position + (Random.insideUnitSphere * 5));
