@@ -1,22 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.PackageManager;
+using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
+    [SerializeField] private string curentstate;
+    [SerializeField] private GameObject player;
     private StateMachine stateMachine;
     private NavMeshAgent agent;
-    [SerializeField] private string curentstate;
-    public path paath;
-    [SerializeField] private GameObject player;
+    private Vector3 LastKnown;
+
     public NavMeshAgent Agent { get => agent; }
     public GameObject Player { get => player; }
+
+    public Vector3 lastKnown { get => LastKnown; set => LastKnown = value; }
+    public path paath;
+
     [Header("sight values")]
     public float sightdistance = 20f;
     public float fov = 60;
     public float eyehight;
+    
    
     void Start()
     {
@@ -26,11 +33,11 @@ public class Enemy : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    // Update is called once per frame
     void Update()
     {
         canseeplayer();
         curentstate = stateMachine.activeState.ToString();
+   
     }
 
     public bool canseeplayer()
@@ -51,6 +58,7 @@ public class Enemy : MonoBehaviour
                         {
                             Debug.DrawRay(ray.origin, ray.direction * sightdistance);
                             //Debug.Log("i have line of sight");
+                            
                             return true;
                         }
                     }
