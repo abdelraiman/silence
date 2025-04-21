@@ -6,6 +6,7 @@ public class attackState : BaseState
 {
     public float movetimer;
     public float looseplayertimer;
+    public float wait;
     public override void Enter()
     {   
     }
@@ -40,8 +41,13 @@ public class attackState : BaseState
 
         if (enemy.Agent.remainingDistance < enemy.Agent.stoppingDistance + 2)
         {
-            //enemy.Agent.SetDestination(lastKnown);
-            Debug.Log("i should stop here");
+            wait += Time.deltaTime;
+
+            if (wait > 2)
+            {
+                Debug.Log("i should stop here");
+            }
+                
         }
     }
 }
