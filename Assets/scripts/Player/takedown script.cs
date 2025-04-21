@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using TMPro;
 
 public class takedownscript : MonoBehaviour
 {
@@ -12,10 +13,14 @@ public class takedownscript : MonoBehaviour
     public KeyCode interact = KeyCode.E;
     RaycastHit hit;
     public GameObject enemy;
+    public GameObject EIndicator;
+    public TextMeshProUGUI input;
     
     void Start()
     {
-       
+        EIndicator.SetActive(false);
+        input.text = ""+interact;
+        
     }
 
     void Update()
@@ -29,7 +34,7 @@ public class takedownscript : MonoBehaviour
             {
                 enemy.GetComponentInParent<enemyTakedown>().tookdown();
                 enemy.GetComponentInParent<NavMeshAgent>().isStopped=true;
-                Debug.Log("enemy is there");
+                Debug.Log("enemy killed");
             }
         }
     }
@@ -43,11 +48,13 @@ public class takedownscript : MonoBehaviour
             if (hit.collider.tag == "enemy")
             {
                 enemy = hit.collider.gameObject;
+                EIndicator.SetActive(true);
                 takedown = true;
             }
             else
             {
                 takedown = false;
+                EIndicator.SetActive(false);
             }
         }
         else
@@ -58,6 +65,7 @@ public class takedownscript : MonoBehaviour
         void off()
         {
             takedown = false;
+            EIndicator.SetActive(false);
         }
     }
 

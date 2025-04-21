@@ -13,9 +13,10 @@ public class Enemy : MonoBehaviour
     private NavMeshAgent agent;
     private Vector3 LastKnown;
 
+
+    public float Attackdistance = 4;
     public NavMeshAgent Agent { get => agent; }
     public GameObject Player { get => player; }
-
     public Vector3 lastKnown { get => LastKnown; set => LastKnown = value; }
     public path paath;
 
@@ -40,6 +41,10 @@ public class Enemy : MonoBehaviour
    
     }
 
+    public bool InAttackRange()
+    {
+        return Vector3.Distance(transform.position, player.transform.position) <= Attackdistance;
+    }
     public bool canseeplayer()
     {
         if (player != null)

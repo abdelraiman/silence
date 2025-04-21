@@ -6,7 +6,6 @@ public class attackState : BaseState
 {
     public float movetimer;
     public float looseplayertimer;
-    public float wait;
     public override void Enter()
     {   
     }
@@ -39,15 +38,16 @@ public class attackState : BaseState
             }
         }
 
-        if (enemy.Agent.remainingDistance < enemy.Agent.stoppingDistance + 2)
+        if (enemy.InAttackRange())
         {
-            wait += Time.deltaTime;
-
-            if (wait > 2)
-            {
-                Debug.Log("i should stop here");
-            }
-                
+            enemy.Agent.isStopped = true;
+            //Debug.Log("STOPPPPP!!!");
         }
+        else if (enemy.Agent.isStopped == true)
+        {
+            enemy.Agent.isStopped = false;
+            //Debug.Log("moving!!!");
+        }
+
     }
 }
