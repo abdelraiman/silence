@@ -26,6 +26,7 @@ public class PatrolState : BaseState
 
     public void PatrolCycle() 
     {
+        enemy.sawplayer = false;
         if (enemy.Agent.remainingDistance < 0.2f)
         {
             wait += Time.deltaTime;

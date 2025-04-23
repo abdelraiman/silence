@@ -2133,6 +2133,10 @@ PrefabInstance:
       propertyPath: EIndicator
       value: 
       objectReference: {fileID: 1188136439}
+    - target: {fileID: 7774923346258118159, guid: ca50d234c0cc0744793ed1430bb065ac, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

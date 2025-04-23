@@ -18,22 +18,22 @@ public class attackState : BaseState
     {
         if (enemy.canseeplayer())
         {
+            enemy.playsound();
             enemy.Agent.SetDestination(enemy.lastKnown);
             looseplayertimer = 0;
             movetimer += Time.deltaTime;
             enemy.transform.LookAt(enemy.Player.transform);
-            if (movetimer > Random.Range(3,7))
-            {
-                enemy.Agent.SetDestination(enemy.transform.position + (Random.insideUnitSphere * 5));
-                movetimer = 0;
-            }
             enemy.lastKnown = enemy.Player.transform.position;
+            //Debug.Log("A");
         }
         else
         {
+            //Debug.Log("B");
+            enemy.sawplayer = false;
             looseplayertimer += Time.deltaTime;
             if (looseplayertimer > 8)
             {
+                //Debug.Log("D");
                 stateMachine.Changstate(new SeartchState());
             }
         }
