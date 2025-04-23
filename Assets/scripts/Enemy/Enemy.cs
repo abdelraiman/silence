@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using System.IO;
-using UnityEditor.PackageManager;
-using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -27,7 +24,7 @@ public class Enemy : MonoBehaviour
     public bool sawplayer;
 
     [Header("audio")]
-    public string FileName = "ceeday-huh-sound-effect.mp3";
+    public string FileName = "ceeday-huh-sound-effect.wav";
     public string FolderName = "audio";
 
     public AudioSource audioSource;
@@ -60,7 +57,7 @@ public class Enemy : MonoBehaviour
         if (player != null)
         {
             //Debug.Log("player is there");
-            if (Vector3.Distance(transform.position,player.transform.position) < sightdistance)
+            if (Vector3.Distance(transform.position, player.transform.position) < sightdistance)
             {
                 //Debug.Log("i think I see the player");
                 Vector3 targetDirection = player.transform.position - transform.position - (Vector3.up * eyehight);
@@ -69,17 +66,17 @@ public class Enemy : MonoBehaviour
                 {
                     Ray ray = new Ray(transform.position + (Vector3.up * eyehight), targetDirection);
                     RaycastHit Hitinfo = new RaycastHit();
-                    if (Physics.Raycast(ray,out Hitinfo, sightdistance))
+                    if (Physics.Raycast(ray, out Hitinfo, sightdistance))
                     {
                         if (Hitinfo.transform.gameObject == player)
                         {
                             Debug.DrawRay(ray.origin, ray.direction * sightdistance);
                             //Debug.Log("i have line of sight");
-                            
+
                             return true;
                         }
                     }
-                    
+
                 }
             }
         }
@@ -98,10 +95,12 @@ public class Enemy : MonoBehaviour
             {
                 short bitvalue = System.BitConverter.ToInt16(audio, i * 2);
 
-                FloatArray[i] = bitvalue / 3768.0f;
+                FloatArray[i] = bitvalue / 32768.0f;
             }
 
-            clip = AudioClip.Create("Jump", FloatArray.Length, 1, 44800, false);
+            int sampleRate = BitConverter.ToInt32(audio, 24);
+
+            clip = AudioClip.Create("HUH", FloatArray.Length, 1, sampleRate, false);
 
             clip.SetData(FloatArray, 0);
         }
@@ -124,6 +123,6 @@ public class Enemy : MonoBehaviour
         {
             audioSource.PlayOneShot(clip);
             sawplayer = true;
-        } 
+        }
     }
 }
