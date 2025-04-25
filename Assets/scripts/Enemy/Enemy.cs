@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.IO;
 using UnityEngine;
 using UnityEngine.AI;
@@ -21,6 +22,7 @@ public class Enemy : MonoBehaviour
     public float sightdistance = 20f;
     public float fov = 60;
     public float eyehight;
+
     public bool sawplayer;
 
     [Header("audio")]
@@ -47,7 +49,7 @@ public class Enemy : MonoBehaviour
         canseeplayer();
         curentstate = stateMachine.activeState.ToString();
     }
-
+    
     public bool InAttackRange()
     {
         return Vector3.Distance(transform.position, player.transform.position) <= Attackdistance;

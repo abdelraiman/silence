@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class attackState : BaseState
 {
@@ -16,6 +17,7 @@ public class attackState : BaseState
 
     public override void Preform()
     {
+        
         if (enemy.canseeplayer())
         {
             enemy.playsound();
