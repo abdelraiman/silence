@@ -10,11 +10,9 @@ public class attackState : BaseState
     public override void Enter()
     {
     }
-
     public override void Exit()
     {
     }
-
     public override void Preform()
     {
         if (enemy.canseeplayer())
@@ -23,10 +21,10 @@ public class attackState : BaseState
         }
         else
         {
-            HandlePlayerLost();
+            PlayerLost();
         }
 
-        HandleMovement();
+        Movement();
 
         if (enemy.InAttackRange())
         {
@@ -37,7 +35,6 @@ public class attackState : BaseState
             ResumeAgent();
         }
     }
-
     private void HandlePlayerSighted()
     {
         enemy.playsound();
@@ -47,8 +44,7 @@ public class attackState : BaseState
         enemy.transform.LookAt(enemy.Player.transform);
         enemy.lastKnown = enemy.Player.transform.position;
     }
-
-    private void HandlePlayerLost()
+    private void PlayerLost()
     {
         enemy.sawplayer = false;
         looseplayertimer += Time.deltaTime;
@@ -58,20 +54,17 @@ public class attackState : BaseState
             stateMachine.Changstate(new SeartchState());
         }
     }
-
-    private void HandleMovement()
+    private void Movement()
     {
         if (!enemy.InAttackRange() && !enemy.Agent.isStopped)
         {
             enemy.Agent.isStopped = false;
         }
     }
-
     private void StopAgent()
     {
         enemy.Agent.isStopped = true;
     }
-
     private void ResumeAgent()
     {
         enemy.Agent.isStopped = false;
