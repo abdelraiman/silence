@@ -1,25 +1,20 @@
-using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class NewBehaviourScript : MonoBehaviour
+public class generate3D : MonoBehaviour
 {
     public Texture2D smiletexure;
 
     public GameObject cube;
 
     [Header("Spawn veriables")]
-    public float Zarea;
-    public float Xarea;
+    public float RaycastHight;
+    public float spacing;
     public float boxpixlesize;
     void Start()
     {
         Spawncoin();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     void Spawncoin()
@@ -28,7 +23,7 @@ public class NewBehaviourScript : MonoBehaviour
         if (smiletexure == null)
         {
             Debug.Log(":(");
-            return;  
+            return;
         }
         Debug.Log(":)");
 
@@ -44,13 +39,18 @@ public class NewBehaviourScript : MonoBehaviour
                 {
                     MarkOcupied(Mathf.FloorToInt(x), Mathf.FloorToInt(y), OcupiedPixles);
 
-                    Vector3 spawnpos = new Vector3(x * boxpixlesize, y * boxpixlesize, Zarea) + transform.position;
+                    Vector3 spawnpos = new Vector3(x * boxpixlesize, RaycastHight, y * boxpixlesize) + transform.position;
 
-                    Instantiate(cube,spawnpos, Quaternion.identity);
+                    if (Physics.Raycast(spawnpos, Vector3.down, out RaycastHit hit, RaycastHight * 2))
+                    {
+                        spawnpos.y = hit.point.y + (cube.transform.localScale.y/ 2); ;
+                    }
+
+                    Instantiate(cube, spawnpos, Quaternion.identity);
 
                     countCubes++;
                     Debug.Log("objects =" + countCubes);
-                }               
+                }
             }
         }
     }
@@ -58,9 +58,9 @@ public class NewBehaviourScript : MonoBehaviour
     {
         int redpixlecounter = 0;
 
-        for (int y = 0; y < Mathf.CeilToInt(boxpixlesize); y ++)
+        for (int y = 0; y < Mathf.CeilToInt(boxpixlesize); y++)
         {
-            for (int x = 0; x < Mathf.CeilToInt(boxpixlesize); x ++)
+            for (int x = 0; x < Mathf.CeilToInt(boxpixlesize); x++)
             {
                 int pixleX = startX + x;
                 int pixleY = startY + y;
@@ -93,7 +93,7 @@ public class NewBehaviourScript : MonoBehaviour
                 int pixleX = startX + x;
                 int pixleY = startY + y;
 
-                if(pixleX >= occupied.GetLength(0) || pixleY >= occupied.GetLength(1))
+                if (pixleX >= occupied.GetLength(0) || pixleY >= occupied.GetLength(1))
                 {
                     continue;
                 }
