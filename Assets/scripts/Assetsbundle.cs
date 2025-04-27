@@ -79,7 +79,6 @@ public class Assetsbundle : MonoBehaviour
             Instantiate(BOXprefab, new Vector3(15, 0, 53.02f), Quaternion.identity);
             Instantiate(BOXprefab, new Vector3(22.22f, 0, 63.72f), Quaternion.identity);
             Instantiate(BOXprefab, new Vector3(22.53f, 0, 53.38f), Quaternion.identity);
-
             Debug.Log("box there");
         }
         if (BOXprefab == null)
