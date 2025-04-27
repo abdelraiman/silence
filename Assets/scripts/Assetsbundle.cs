@@ -8,6 +8,8 @@ public class Assetsbundle : MonoBehaviour
     string folderPath = "AssetBundles";
     string fileName = "stuff";
     string combinedPath;
+    public bool box = false;
+    public bool wall = false;
 
     private AssetBundle stuff; 
 
@@ -15,12 +17,14 @@ public class Assetsbundle : MonoBehaviour
     void Awake()
     {
         LoadAssetsBunndle();
-        //Loadprefab();
+        Loadprefab();
         Loadboxes();
     }
 
     void Loadprefab()
     {
+        if (wall != true)
+            return;
         Debug.Log("starting load"); 
 
         if (stuff == null)
@@ -62,7 +66,8 @@ public class Assetsbundle : MonoBehaviour
 
     void Loadboxes()
     {
-
+        if (box != true)
+            return;
         Debug.Log("starting load of box");
 
         if (stuff == null)
