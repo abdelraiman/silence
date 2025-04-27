@@ -8,14 +8,14 @@ using UnityEngine.Rendering;
 public class FileSystems : MonoBehaviour
 { 
     public string filename = "wall.jpeg";
-    public string folderpath = Application.streamingAssetsPath;
+    //public string folderpath = Application.streamingAssetsPath;
     private string CombinedFilePathLocation;
 
     void OnEnable()
     {
         Debug.Log("Ive been enabled");
 
-        CombinedFilePathLocation = Path.Combine(folderpath, filename);
+        CombinedFilePathLocation = Path.Combine(Application.streamingAssetsPath, filename);
         LoadPlayer();
         Laodtextxr();
         
