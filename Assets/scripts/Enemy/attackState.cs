@@ -8,7 +8,7 @@ public class attackState : BaseState
     public float movetimer;
     public float looseplayertimer;
     public override void Enter()
-    {   
+    {
     }
 
     public override void Exit()
@@ -19,36 +19,61 @@ public class attackState : BaseState
     {
         if (enemy.canseeplayer())
         {
-            enemy.playsound();
-            enemy.Agent.SetDestination(enemy.lastKnown);
-            looseplayertimer = 0;
-            movetimer += Time.deltaTime;
-            enemy.transform.LookAt(enemy.Player.transform);
-            enemy.lastKnown = enemy.Player.transform.position;
-            //Debug.Log("A");
+            HandlePlayerSighted();
         }
         else
         {
-            //Debug.Log("B");
-            enemy.sawplayer = false;
-            looseplayertimer += Time.deltaTime;
-            if (looseplayertimer > 8)
-            {
-                //Debug.Log("D");
-                stateMachine.Changstate(new SeartchState());
-            }
+            HandlePlayerLost();
         }
+
+        HandleMovement();
 
         if (enemy.InAttackRange())
         {
-            enemy.Agent.isStopped = true;
-            //Debug.Log("STOPPPPP!!!");
+            StopAgent();
         }
-        else if (enemy.Agent.isStopped == true)
+        else if (enemy.Agent.isStopped)
+        {
+            ResumeAgent();
+        }
+    }
+
+    private void HandlePlayerSighted()
+    {
+        enemy.playsound();
+        enemy.Agent.SetDestination(enemy.lastKnown);
+        looseplayertimer = 0;
+        movetimer += Time.deltaTime;
+        enemy.transform.LookAt(enemy.Player.transform);
+        enemy.lastKnown = enemy.Player.transform.position;
+    }
+
+    private void HandlePlayerLost()
+    {
+        enemy.sawplayer = false;
+        looseplayertimer += Time.deltaTime;
+
+        if (looseplayertimer > 8f)
+        {
+            stateMachine.Changstate(new SeartchState());
+        }
+    }
+
+    private void HandleMovement()
+    {
+        if (!enemy.InAttackRange() && !enemy.Agent.isStopped)
         {
             enemy.Agent.isStopped = false;
-            //Debug.Log("moving!!!");
         }
+    }
 
+    private void StopAgent()
+    {
+        enemy.Agent.isStopped = true;
+    }
+
+    private void ResumeAgent()
+    {
+        enemy.Agent.isStopped = false;
     }
 }

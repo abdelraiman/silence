@@ -15,7 +15,8 @@ public class Assetsbundle : MonoBehaviour
     void Awake()
     {
         LoadAssetsBunndle();
-        Loadprefab();
+        //Loadprefab();
+        Loadboxes();
     }
 
     void Loadprefab()
@@ -35,7 +36,8 @@ public class Assetsbundle : MonoBehaviour
         if (Wallprefab != null)
         {
           Instantiate(Wallprefab, Vector3.up * 2, Quaternion.identity);
-          Debug.Log("wall is there");
+          Instantiate(Wallprefab,new Vector3(100f,0,31.85f), Quaternion.identity);
+            Debug.Log("wall is there");
         }
         if (Wallprefab == null)
         {
@@ -56,5 +58,10 @@ public class Assetsbundle : MonoBehaviour
         {
             Debug.Log("i dont see any of those files in the assetsbunndle" + combinedPath);
         }
+    }
+
+    void Loadboxes()
+    {
+
     }
 }
