@@ -54,6 +54,7 @@ public class FileSystems : MonoBehaviour
     {
         Debug.Log("loading player stuff");
         string streamingAssetsPath = Application.streamingAssetsPath;
+        
         if (Directory.Exists(streamingAssetsPath))
         {
             Debug.Log("streaming aassets looks good");

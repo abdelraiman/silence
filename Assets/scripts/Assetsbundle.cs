@@ -63,5 +63,28 @@ public class Assetsbundle : MonoBehaviour
     void Loadboxes()
     {
 
+        Debug.Log("starting load of box");
+
+        if (stuff == null)
+        {
+            Debug.Log("assetbundle not found");
+            return;
+        }
+
+        GameObject BOXprefab = stuff.LoadAsset<GameObject>("Box");
+
+        if (BOXprefab != null)
+        {
+            Instantiate(BOXprefab, new Vector3(14.95f, 0, 63.37f), Quaternion.identity);
+            Instantiate(BOXprefab, new Vector3(15, 0, 53.02f), Quaternion.identity);
+            Instantiate(BOXprefab, new Vector3(22.22f, 0, 63.72f), Quaternion.identity);
+            Instantiate(BOXprefab, new Vector3(22.53f, 0, 53.38f), Quaternion.identity);
+
+            Debug.Log("box there");
+        }
+        if (BOXprefab == null)
+        {
+            Debug.Log("no box in bundle!!!");
+        }
     }
 }
