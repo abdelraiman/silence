@@ -45,7 +45,7 @@ public class takedownscript : MonoBehaviour
         {
             //Debug.Log(hit.transform.name);
 
-            if (hit.collider.tag == "enemy")
+            if (hit.collider.tag == "enemy box")
             {
                 enemy = hit.collider.gameObject;
                 EIndicator.SetActive(true);

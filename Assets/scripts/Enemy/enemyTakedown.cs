@@ -8,8 +8,10 @@ public class enemyTakedown : MonoBehaviour
     public bool dead = false;
     public GameObject GameObject;
     public int delaytime = 10;
+    public MonoBehaviour eenemy;
     void Start()
     {
+        eenemy = GetComponent<Enemy>();
         anim = GetComponentInChildren<Animator>();
         GameObject = gameObject;
     }
@@ -26,6 +28,7 @@ public class enemyTakedown : MonoBehaviour
     {
         if (dead == true)
         {
+            eenemy.enabled = false;
             StartCoroutine(destroyenemy());
         }
     }

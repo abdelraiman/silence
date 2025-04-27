@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4536920102172442690}
   m_Layer: 0
   m_Name: enemy
-  m_TagString: Untagged
+  m_TagString: enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -49,6 +49,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 6083496923772385789}
+  dead: 0
+  GameObject: {fileID: 0}
+  delaytime: 10
+  eenemy: {fileID: 0}
 --- !u!114 &1232700348510420705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62,7 +66,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   curentstate: 
+  player: {fileID: 0}
+  Attackdistance: 4
   paath: {fileID: 0}
+  sightdistance: 50
+  fov: 60
+  eyehight: 0
+  sawplayer: 0
+  FileName: ceeday-huh-sound-effect.wav
+  FolderName: audio
+  audioSource: {fileID: 0}
 --- !u!114 &2460009144268361784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89,7 +102,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0
+  m_StoppingDistance: 0.1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -347,7 +360,7 @@ GameObject:
   - component: {fileID: 8929761362859760077}
   m_Layer: 8
   m_Name: takedown box
-  m_TagString: enemy
+  m_TagString: enemy box
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -17,7 +17,6 @@ public class attackState : BaseState
 
     public override void Preform()
     {
-        
         if (enemy.canseeplayer())
         {
             enemy.playsound();
