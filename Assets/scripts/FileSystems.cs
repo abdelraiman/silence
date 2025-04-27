@@ -8,7 +8,7 @@ using UnityEngine.Rendering;
 public class FileSystems : MonoBehaviour
 { 
     public string filename = "wall.jpeg";
-    public string materialDataFileName = "bodyMaterialData.json";  // JSON file with material properties
+    public string materialDataFileName = "bodyMaterialData.json";
     private string materialDataFilePath;
     private string CombinedFilePathLocation;
 
@@ -80,7 +80,7 @@ public class FileSystems : MonoBehaviour
             material.SetFloat("_Smoothness", materialData.smoothness);
 
 
-            GameObject[] objects = GameObject.FindGameObjectsWithTag("Player");
+            GameObject[] objects = GameObject.FindGameObjectsWithTag("PlayerBody");
 
             foreach (GameObject obj in objects)
             {
@@ -99,7 +99,7 @@ public class FileSystems : MonoBehaviour
             Material newMat = new Material(Shader.Find("Standard"));
             newMat.color = Color.blue;
 
-            GameObject[] objects = GameObject.FindGameObjectsWithTag("Player");
+            GameObject[] objects = GameObject.FindGameObjectsWithTag("PlayerBody");
             foreach (GameObject obj in objects)
             {
                 obj.GetComponent<Renderer>().material = newMat;
