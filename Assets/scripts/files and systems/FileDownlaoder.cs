@@ -21,7 +21,7 @@ public class FileDownlaoder : MonoBehaviour
             metaData.SetupLocalMetaData();
             yield return StartCoroutine(DownloadFile(metaData.DirectMetadataDownloadLink, metaData.LocalMetadataFilePath));
             yield return new WaitForEndOfFrame();
-            if (metaData.FileNeedsUpdating())
+            if (metaData.FileNeedsUpdating() || !File.Exists(metaData.LocalFilePath))
             {
                 metaData.DeleteLocalFile();
                 if (!string.IsNullOrEmpty(metaData.LocalMetadataFilePath) && !string.IsNullOrEmpty(metaData.DirectMetadataDownloadLink))
