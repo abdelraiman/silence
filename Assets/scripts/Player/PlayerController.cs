@@ -10,7 +10,8 @@ public class PlayerController : MonoBehaviour
     float horizontalInput;
     float verticalInput;
     public float gravity;
-
+    public GameObject Sbuttons;
+    public GameObject Lbuttons;
     public movmentstate state;
     Vector3 moveDirection;
     Rigidbody rb;
@@ -106,6 +107,19 @@ public class PlayerController : MonoBehaviour
 
     void MyInputs()
     {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            Sbuttons.SetActive(true);
+            Lbuttons.SetActive(true);
+            Time.timeScale = 0f;
+        }
+        else if (Input.GetKeyUp(KeyCode.Tab))
+        {
+            Sbuttons.SetActive(false);
+            Lbuttons.SetActive(false);
+            Time.timeScale = 1f;
+        }
+
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
         if (Input.GetKey(jumpkey) && canJump && grounded)

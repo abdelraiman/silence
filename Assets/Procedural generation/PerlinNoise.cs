@@ -5,9 +5,9 @@ using UnityEngine.UIElements;
 
 public class PerlinNoise : MonoBehaviour
 {
-    public int width = 256;
-    public int height = 256;
-    public float scale = 20;
+    public int width;
+    public int height;
+    public float scale;
 
     public Terrain terrain;
     public float heightMultiplier = 10;
@@ -15,6 +15,9 @@ public class PerlinNoise : MonoBehaviour
   
     public void ApplyPerlinNoiseToTerrain()
     {
+        width = Random.Range(200, 256);
+        height = Random.Range(200, 256);
+        scale = Random.Range(20, 50);
         if (terrain == null)
         {
             Debug.Log("no terrain");
