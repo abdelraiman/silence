@@ -8,6 +8,7 @@ public class Assetsbundle : MonoBehaviour
     string folderPath = "AssetBundles";
     string fileName = "stuff";
     string combinedPath;
+    [Header("bools")]
     public bool box = false;
     public bool wall = false;
 

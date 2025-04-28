@@ -8,7 +8,6 @@ using System.Threading;
 public class CloudSave : MonoBehaviour
 {
     public bool Achivmerntyay;
-    public Text status;
     public InputField inpf;
     public int jump;
     float timer;

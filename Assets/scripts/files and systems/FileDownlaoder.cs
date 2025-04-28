@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 
 public class FileDownlaoder : MonoBehaviour
 {
+    //https://drive.google.com/drive/folders/1cwyCXJz4ucu-nA6M7dVlbUsd6BRE6izq?usp=drive_link
 
     [SerializeField] private List<MetadataScriptableObject> filesToDownload = new List<MetadataScriptableObject>();
     void Start()
