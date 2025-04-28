@@ -3006,6 +3006,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dd46bb4076f70a4f80b000d31ba7bce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Achivmerntyay: 0
   status: {fileID: 0}
   inpf: {fileID: 0}
   jump: 0
