@@ -3007,7 +3007,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Achivmerntyay: 0
-  status: {fileID: 0}
   inpf: {fileID: 0}
   jump: 0
 --- !u!1 &1868111512
