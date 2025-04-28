@@ -12,11 +12,12 @@ public class PlayerController : MonoBehaviour
     public float gravity;
     public GameObject Sbuttons;
     public GameObject Lbuttons;
+    public GameObject Rbuttons;
     public movmentstate state;
     Vector3 moveDirection;
     Rigidbody rb;
     public LayerMask Ground;
-
+    public CloudSave CloudSave;
     private string CombinedFilePath;
     public string FileName = "jump.wav";
     public string FolderName = "audio";
@@ -111,12 +112,14 @@ public class PlayerController : MonoBehaviour
         {
             Sbuttons.SetActive(true);
             Lbuttons.SetActive(true);
+            Rbuttons.SetActive(true);
             Time.timeScale = 0f;
         }
         else if (Input.GetKeyUp(KeyCode.Tab))
         {
             Sbuttons.SetActive(false);
             Lbuttons.SetActive(false);
+            Rbuttons.SetActive(false);
             Time.timeScale = 1f;
         }
 
@@ -189,6 +192,7 @@ public class PlayerController : MonoBehaviour
 
     void jump()
     {
+        CloudSave.addjump();
         playsound();
         exitingslop = true;
 
@@ -213,7 +217,7 @@ public class PlayerController : MonoBehaviour
             state = movmentstate.crouching;
             moveSpeed = crouchspeed;
         }
-        if (grounded && Input.GetKey(sprintkey) && !crouthing)
+        if (grounded && Input.GetKey(sprintkey) && !crouthing && CloudSave.Achivmerntyay)
         {
             state = movmentstate.sprinting;
             moveSpeed = sprintspeed;

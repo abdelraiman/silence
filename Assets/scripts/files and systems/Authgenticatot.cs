@@ -9,10 +9,12 @@ using System;
 public class Authgenticatot : MonoBehaviour
 {
     public Text logTxt;
+    
 
-    async void Start()
+    async void Awake()
     {
         await UnityServices.InitializeAsync();
+        await signInAnonymous();
     }
 
     public async void SignIn()
@@ -35,4 +37,5 @@ public class Authgenticatot : MonoBehaviour
             Debug.LogException(ex);
         }
     }
+   
 }

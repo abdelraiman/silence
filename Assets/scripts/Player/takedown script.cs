@@ -15,7 +15,8 @@ public class takedownscript : MonoBehaviour
     public GameObject enemy;
     public GameObject EIndicator;
     public TextMeshProUGUI input;
-    
+    public CloudSave CloudSave;
+
     void Start()
     {
         EIndicator.SetActive(false);
@@ -32,6 +33,7 @@ public class takedownscript : MonoBehaviour
             Debug.Log("assasinated");
             if (enemy != null)
             {
+                CloudSave.addDeath();
                 enemy.GetComponentInParent<enemyTakedown>().tookdown();
                 enemy.GetComponentInParent<NavMeshAgent>().isStopped=true;
                 Debug.Log("enemy killed");
