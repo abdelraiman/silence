@@ -14,6 +14,7 @@ public class CloudSave : MonoBehaviour
     int EnemyesKilled;
     public async void Start()
     {
+        Achivmerntyay = true;
         await UnityServices.InitializeAsync();
     }
     public void Update()

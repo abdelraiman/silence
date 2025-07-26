@@ -13,14 +13,14 @@ public class takedownscript : MonoBehaviour
     public KeyCode interact = KeyCode.E;
     RaycastHit hit;
     public GameObject enemy;
-    public GameObject EIndicator;
-    public TextMeshProUGUI input;
+    //public GameObject EIndicator;
+    //public TextMeshProUGUI input;
     public CloudSave CloudSave;
 
     void Start()
     {
-        EIndicator.SetActive(false);
-        input.text = ""+interact;
+        //EIndicator.SetActive(false);
+        //input.text = ""+interact;
         
     }
 
@@ -50,13 +50,13 @@ public class takedownscript : MonoBehaviour
             if (hit.collider.tag == "enemy box")
             {
                 enemy = hit.collider.gameObject;
-                EIndicator.SetActive(true);
+                //EIndicator.SetActive(true);
                 takedown = true;
             }
             else
             {
                 takedown = false;
-                EIndicator.SetActive(false);
+                //EIndicator.SetActive(false);
             }
         }
         else
@@ -67,7 +67,7 @@ public class takedownscript : MonoBehaviour
         void off()
         {
             takedown = false;
-            EIndicator.SetActive(false);
+           // EIndicator.SetActive(false);
         }
     }
 

@@ -92,6 +92,8 @@ public class PlayerController : MonoBehaviour
         MyInputs();
         speedCom();
         states();
+     
+        
 
         if (grounded)
             rb.drag = GDrag;
@@ -192,8 +194,8 @@ public class PlayerController : MonoBehaviour
 
     void jump()
     {
-        CloudSave.addjump();
-        playsound();
+        //CloudSave.addjump();
+        //playsound();
         exitingslop = true;
 
         if (crouthing)
@@ -217,7 +219,7 @@ public class PlayerController : MonoBehaviour
             state = movmentstate.crouching;
             moveSpeed = crouchspeed;
         }
-        if (grounded && Input.GetKey(sprintkey) && !crouthing && CloudSave.Achivmerntyay)
+        if (grounded && Input.GetKey(sprintkey) && !crouthing)
         {
             state = movmentstate.sprinting;
             moveSpeed = sprintspeed;
