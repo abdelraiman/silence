@@ -4,6 +4,7 @@ using UnityEngine;
 public class AIBeliefs
 {
     public string Name { get; }
+
     public Func<bool> condition = () => false;
     public Func<Vector3> observedLocation = () => Vector3.zero;
 
@@ -14,7 +15,7 @@ public class AIBeliefs
         Name = name;
     }
 
-
+    public bool Evaluate() => condition();
     public class Builder
     {
         readonly AIBeliefs belief;

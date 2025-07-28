@@ -2,16 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Stratagies : MonoBehaviour
+public interface IActionStratagy
 {
-    // Start is called before the first frame update
+    bool CanPerform {  get; }
+    bool Complete { get; }
+
     void Start()
     {
-        
+
     }
 
-    // Update is called once per frame
-    void Update()
+    void Update(float deltatime)
+    {
+
+    }
+
+    void Stop() 
     {
         
     }
