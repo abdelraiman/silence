@@ -46,18 +46,18 @@ public class Sensor : MonoBehaviour
         if (IsTargetInRange && (LastKnownPosition != TargetPosition || LastKnownPosition != Vector3.zero))
         {
             LastKnownPosition = TargetPosition;
-            OnTargetChanged.Invoke();
+            OnTargetChanged.Invoke()  ;
         }
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag("player")) return;
+        if (!other.CompareTag("Player")) return;
         UpdateTargetPosition(other.gameObject);
     }
     void OnTriggerExit(Collider other)
     {
-        if (!other.CompareTag("player")) return;
+        if (!other.CompareTag("Player")) return;
         UpdateTargetPosition();
     }
     void OnDrawGizmos()

@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-[RequireComponent(typeof(AnimationController))]
 public class GoapAgent : MonoBehaviour
 {
     NavMeshAgent navMeshAgent;
@@ -52,6 +51,8 @@ public class GoapAgent : MonoBehaviour
 
     void Start()
     {
+        if (animations != null)
+            animations.SetSpeed(navMeshAgent.velocity.magnitude);
         SetupTimers();
         SetUpBeliefs();
         SetUpAtctions();
@@ -89,7 +90,7 @@ public class GoapAgent : MonoBehaviour
             .WithDesieredEffect(beliefs["Nothing"]).Build());
         goals.Add(new Goals.Builder("move")
         .WithPrioraty(1)
-        .WithDesieredEffect(beliefs["moving"]).Build());
+        .WithDesieredEffect(beliefs["AgentIdle"]).Build());
     }
     void SetupTimers()
     {
@@ -102,9 +103,6 @@ public class GoapAgent : MonoBehaviour
         StatTimer.Start();
     }
 
-
-
-    // TODO move to stats system
     void UpdateState()
     {
         stamina += InRangeOf(RestingPosition.position, 3f) ? 20 : -10;
@@ -112,6 +110,7 @@ public class GoapAgent : MonoBehaviour
         stamina = Mathf.Clamp(stamina, 0, 100);
         Health = Mathf.Clamp(stamina, 0, 100);
     }
+
     bool InRangeOf(Vector3 pos, float range) =>
         Vector3.Distance(transform.position, pos) < range;
     void OnEnable() => ChaseSensor.OnTargetChanged += HandleTargetChanged;
@@ -127,7 +126,7 @@ public class GoapAgent : MonoBehaviour
     void Update()
     {
         StatTimer.Tick(Time.deltaTime);
-        animations.SetSpeed(navMeshAgent.velocity.magnitude);
+        //animations.SetSpeed(navMeshAgent.velocity.magnitude);
 
         if (CurrentAction != null)
         {
