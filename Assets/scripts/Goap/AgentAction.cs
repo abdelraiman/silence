@@ -10,7 +10,7 @@ public class AgentAction
     public HashSet<AIBeliefs> Preconditions { get; } = new();
     public HashSet<AIBeliefs> Effects { get; } = new();
 
-    IActionStratagy Stratagy;
+    ActionStratagy Stratagy;
     public bool Complete => Stratagy.Complete;
     AgentAction(string name)
     {
@@ -52,7 +52,7 @@ public class AgentAction
             action.Cost = cost;
             return this;
         }
-        public Builder WithStrategy(IActionStratagy strategy)
+        public Builder WithStrategy(ActionStratagy strategy)
         {
             action.Stratagy = strategy;
             return this;
