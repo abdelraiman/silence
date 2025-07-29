@@ -31,9 +31,9 @@ public class Sensor : MonoBehaviour
         timer.OnTimerStop += () =>
         {
             UpdateTargetPosition(target.OrNull());
-            timer.start();
+            timer.Start();
         };
-        timer.start();
+        timer.Start();
     }
 
     void Update()
@@ -46,7 +46,7 @@ public class Sensor : MonoBehaviour
         if (IsTargetInRange && (LastKnownPosition != TargetPosition || LastKnownPosition != Vector3.zero))
         {
             LastKnownPosition = TargetPosition;
-            OnTargetChanged.Invoke;
+            OnTargetChanged.Invoke();
         }
     }
 

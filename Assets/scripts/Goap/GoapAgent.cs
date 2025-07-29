@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -16,13 +17,15 @@ public class GoapAgent : MonoBehaviour
     Vector3 destination;
 
     Goals LastGoal;
-    public Goals CurrentGoals;
+    public Goals CurrentGoal;
     public ActionPlan actionPlan;
     public AgentAction CurrentAction;
 
     public Dictionary<string, AIBeliefs> beliefs;
     public HashSet<AgentAction> actions;
     public HashSet<Goals> goals;
+
+    GoapPlannerI Gplanner;
 
     [Header("Sensors")]
     [SerializeField] Sensor ChaseSensor;
@@ -44,6 +47,7 @@ public class GoapAgent : MonoBehaviour
         animations = GetComponent<AnimationController>();
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+        Gplanner = new GoapPlanner();
     }
 
     void Start()
@@ -117,7 +121,66 @@ public class GoapAgent : MonoBehaviour
     {
         Debug.Log("target changed");
         CurrentAction = null;
-        CurrentGoals = null;
+        CurrentGoal = null;
     }
 
+    void Update()
+    {
+        StatTimer.Tick(Time.deltaTime);
+        animations.SetSpeed(navMeshAgent.velocity.magnitude);
+
+        if (CurrentAction != null)
+        {
+            Debug.Log("calculating any potential new plan");
+            CalculatePlane();
+        }
+
+        if (actionPlan != null && actionPlan.Actions.Count > 0)
+        {
+            navMeshAgent.ResetPath();
+
+            CurrentAction = actionPlan.Actions.Pop();
+            CurrentAction.Start();
+            Debug.Log($"Goal: {CurrentGoal.Name} with {actionPlan.Actions.Count} action in plan");
+            Debug.Log($"Poped action: {CurrentGoal.Name}");
+        }
+
+        if(actionPlan !=null && CurrentAction != null)
+        {
+            CurrentAction.update(Time.deltaTime);
+
+            if (CurrentAction.Complete)
+            {
+                Debug.Log($"{CurrentAction.Name} complete");
+                CurrentAction.Stop();
+                CurrentAction = null;
+
+                if (actionPlan.Actions.Count == 0)
+                {
+                    Debug.Log("plan comleted");
+                    LastGoal = CurrentGoal;
+                    CurrentGoal = null;
+                }
+            }
+        }
+    }
+
+    void CalculatePlane()
+    {
+        var PriorityLevel = CurrentGoal?.Priority ?? 0;
+
+        HashSet<Goals> Checkgoals = goals;
+
+        if (CurrentGoal != null)
+        {
+            Debug.Log("Current goal exists,checking for higher priority");
+            Checkgoals = new HashSet<Goals>(goals.Where(g => g.Priority > PriorityLevel));
+        }
+
+        var PotentialPlan = Gplanner.Plan(this, Checkgoals, LastGoal);
+        if (PotentialPlan != null)
+        {
+            actionPlan = PotentialPlan;
+        }
+    }
 }
