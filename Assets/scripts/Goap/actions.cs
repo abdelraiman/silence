@@ -1,39 +1,42 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class AgentAction
 {
     public string Name { get; }
     public float Cost { get; private set; }
 
-    public HashSet<AIBeliefs> Preconditions { get; } = new();
-    public HashSet<AIBeliefs> Effects { get; } = new();
+    public HashSet<AgentBelief> Preconditions { get; } = new();
+    public HashSet<AgentBelief> Effects { get; } = new();
 
-    ActionStratagy Stratagy;
-    public bool Complete => Stratagy.Complete;
+    IActionStrategy strategy;
+    public bool Complete => strategy.Complete;
+
     AgentAction(string name)
     {
         Name = name;
     }
-    public void Start() => Stratagy.Start();
 
-    public void update(float deltatime)
+    public void Start() => strategy.Start();
+
+    public void Update(float deltaTime)
     {
-        if (Stratagy.Complete)
+        // Check if the action can be performed and update the strategy
+        if (strategy.CanPerform)
         {
-            Stratagy.Update(deltatime);
+            strategy.Update(deltaTime);
         }
 
-        if (!Stratagy.Complete) return;
+        // Bail out if the strategy is still executing
+        if (!strategy.Complete) return;
 
-        foreach (var effect  in Effects)
+        // Apply effects
+        foreach (var effect in Effects)
         {
             effect.Evaluate();
         }
     }
 
-    public void Stop() => Stratagy.Stop();
+    public void Stop() => strategy.Stop();
 
     public class Builder
     {
@@ -52,22 +55,25 @@ public class AgentAction
             action.Cost = cost;
             return this;
         }
-        public Builder WithStrategy(ActionStratagy strategy)
+
+        public Builder WithStrategy(IActionStrategy strategy)
         {
-            action.Stratagy = strategy;
+            action.strategy = strategy;
             return this;
         }
 
-        public Builder AddPrecondition(AIBeliefs precondition)
+        public Builder AddPrecondition(AgentBelief precondition)
         {
             action.Preconditions.Add(precondition);
             return this;
         }
-        public Builder AddEffect(AIBeliefs effect)
+
+        public Builder AddEffect(AgentBelief effect)
         {
             action.Effects.Add(effect);
             return this;
         }
+
         public AgentAction Build()
         {
             return action;

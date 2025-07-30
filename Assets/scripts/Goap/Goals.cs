@@ -1,39 +1,38 @@
 using System.Collections.Generic;
-using UnityEngine;
 
-public class Goals : MonoBehaviour
+public class AgentGoal
 {
     public string Name { get; }
     public float Priority { get; private set; }
-    public HashSet<AIBeliefs> DesiredEffect { get; } = new();
+    public HashSet<AgentBelief> DesiredEffects { get; } = new();
 
-    Goals(string name) 
+    AgentGoal(string name)
     {
         Name = name;
     }
 
     public class Builder
     {
-        readonly Goals goal;
+        readonly AgentGoal goal;
 
         public Builder(string name)
         {
-            goal = new Goals(name);
+            goal = new AgentGoal(name);
         }
 
-        public Builder WithPrioraty(float priority)
+        public Builder WithPriority(float priority)
         {
             goal.Priority = priority;
             return this;
         }
 
-        public Builder WithDesieredEffect(AIBeliefs effects)
+        public Builder WithDesiredEffect(AgentBelief effect)
         {
-            goal.DesiredEffect.Add(effects);
+            goal.DesiredEffects.Add(effect);
             return this;
         }
 
-        public Goals Build()
+        public AgentGoal Build()
         {
             return goal;
         }

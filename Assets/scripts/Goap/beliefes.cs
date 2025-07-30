@@ -1,44 +1,47 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class AIBeliefs
+public class AgentBelief
 {
     public string Name { get; }
 
-    public Func<bool> condition = () => false;
-    public Func<Vector3> observedLocation = () => Vector3.zero;
+    Func<bool> condition = () => false;
+    Func<Vector3> observedLocation = () => Vector3.zero;
 
     public Vector3 Location => observedLocation();
 
-    public AIBeliefs(string name)
+    AgentBelief(string name)
     {
         Name = name;
     }
 
     public bool Evaluate() => condition();
+
     public class Builder
     {
-        readonly AIBeliefs belief;
+        readonly AgentBelief belief;
+
         public Builder(string name)
         {
-            belief = new AIBeliefs(name);
+            belief = new AgentBelief(name);
         }
+
         public Builder WithCondition(Func<bool> condition)
         {
             belief.condition = condition;
             return this;
         }
-        public Builder WithCondition(Func<Vector3> observedLocation)
+
+        public Builder WithLocation(Func<Vector3> observedLocation)
         {
             belief.observedLocation = observedLocation;
-            return this; 
+            return this;
         }
 
-        public AIBeliefs Build()
+        public AgentBelief Build()
         {
             return belief;
         }
     }
-
-
 }

@@ -42,9 +42,9 @@ public abstract class Timer
     public abstract void Tick(float deltaTime);
 }
 
-public class CountDownTimer : Timer
+public class CountdownTimer : Timer
 {
-    public CountDownTimer(float value) : base(value) { }
+    public CountdownTimer(float value) : base(value) { }
 
     public override void Tick(float deltaTime)
     {

@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     public GameObject Sbuttons;
     public GameObject Lbuttons;
     public GameObject Rbuttons;
+    public GameObject Spottedtxt;
     public movmentstate state;
     Vector3 moveDirection;
     Rigidbody rb;
@@ -76,7 +77,7 @@ public class PlayerController : MonoBehaviour
         rb.freezeRotation = true;
 
         canJump = true;
-
+        Spottedtxt.SetActive(false);
 
         if (audioSource == null)
         {
