@@ -34,7 +34,7 @@ public class Sensor : MonoBehaviour
         detectionRange = GetComponent<SphereCollider>();
         detectionRange.isTrigger = true;
         detectionRange.radius = triggerRadius;
-        playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+        //playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
     }
 
     void Start()

@@ -122,3 +122,70 @@ public class AttackStrategy : IActionStrategy
     public void Update(float deltaTime) => timer.Tick(deltaTime);
     public void Stop() => Complete = true;
 }
+
+public class TimedCallbackStrategy : IActionStrategy
+{
+    readonly CountdownTimer timer;
+    readonly System.Action onComplete;
+
+    public bool CanPerform => true;
+    public bool Complete { get; private set; }
+
+    public TimedCallbackStrategy(float seconds, System.Action onComplete)
+    {
+        this.onComplete = onComplete;
+        timer = new CountdownTimer(seconds);
+        timer.OnTimerStart += () => Complete = false;
+        timer.OnTimerStop += () => { if (!Complete) onComplete?.Invoke(); Complete = true; };
+    }
+
+    public void Start() => timer.Start();
+    public void Update(float dt) => timer.Tick(dt);
+    public void Stop() => Complete = true;
+}
+
+public class RepeatCallbackUntilStrategy : IActionStrategy
+{
+    readonly float intervalSeconds;
+    readonly Func<bool> donePredicate;
+    readonly Action onTick;
+
+    CountdownTimer timer;
+    public bool CanPerform => true;
+    public bool Complete { get; private set; }
+
+    public RepeatCallbackUntilStrategy(float intervalSeconds, Func<bool> donePredicate, Action onTick)
+    {
+        this.intervalSeconds = intervalSeconds;
+        this.donePredicate = donePredicate;
+        this.onTick = onTick;
+    }
+    public void Start()
+    {
+        Complete = false;
+        timer = new CountdownTimer(intervalSeconds);
+        timer.OnTimerStop += HandleTick;
+        timer.Start();
+    }
+    public void Update(float deltaTime)
+    {
+        if (Complete) return;
+        timer.Tick(deltaTime);
+    }
+
+    void HandleTick()
+    {
+        if (Complete) return;
+
+        onTick?.Invoke();                 
+        if (donePredicate())
+        {           
+            Complete = true;
+            return;
+        }
+
+        timer.Start();
+    }
+
+    public void Stop() => Complete = true;
+}

@@ -8,6 +8,8 @@ TagManager:
   - enemy
   - enemy box
   - PlayerBody
+  - Survivor
+  - Woodworker
   layers:
   - Default
   - TransparentFX

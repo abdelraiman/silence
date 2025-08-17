@@ -1,6 +1,5 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using DependencyInjection;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -16,13 +15,19 @@ public class GoapAgent : MonoBehaviour
     [SerializeField] Transform foodShack;
     [SerializeField] Transform doorOnePosition;
     [SerializeField] Transform doorTwoPosition;
+    [SerializeField] Transform woodShopCounter_Survivor;
+    [SerializeField] Transform woodShopCounter_Worker;
+    [SerializeField] Transform firePlace;
+    [SerializeField] Transform forestPosition;
 
-    NavMeshAgent navMeshAgent;
-    Rigidbody rb;
+    
 
     [Header("Stats")]
     public float health = 100;
     public float stamina = 100;
+    public int woodCount = 0;
+    public int fireplaceWood = 0;
+    [SerializeField] float handoffRadius = 5f;
 
     CountdownTimer statsTimer;
 
@@ -34,6 +39,9 @@ public class GoapAgent : MonoBehaviour
     public ActionPlan actionPlan;
     public AgentAction currentAction;
 
+    [SerializeField] GoapAgent survivorRef;
+    NavMeshAgent navMeshAgent;
+    Rigidbody rb;
     public Dictionary<string, AgentBelief> beliefs;
     public HashSet<AgentAction> actions;
     public HashSet<AgentGoal> goals;
@@ -41,17 +49,43 @@ public class GoapAgent : MonoBehaviour
     GoapFactory gFactory;
     IGoapPlanner gPlanner;
 
-    bool allPreconditionsMet = true;
+    public bool allPreconditionsMet = true;
+    public enum AgentRole { Survivor, Woodworker }
+
+    [Header("Role Settings")]
+    [SerializeField] AgentRole role = AgentRole.Survivor;
 
     void Awake()
     {
+        navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         gFactory = UnityServiceLocator.ServiceLocator.Global.Get<GoapFactory>();
         gPlanner = gFactory.CreatePlanner();
+        
+
+        if (CompareTag("Survivor"))
+        {
+            role = AgentRole.Survivor;
+        }
+        
+        if (CompareTag("Woodworker"))
+        {
+            role = AgentRole.Woodworker;
+        }
+
+        GameObject survivorObj = GameObject.FindGameObjectWithTag("Survivor");
+        if (survivorObj != null)
+        {
+            survivorRef = survivorObj.GetComponent<GoapAgent>();
+        }
+        else
+        {
+            Debug.LogWarning("No Survivor found in the scene!");
+        }
     }
-    
+
     void Start()
     {
         SetupTimers();
@@ -66,90 +100,201 @@ public class GoapAgent : MonoBehaviour
         BeliefFactory factory = new BeliefFactory(this, beliefs);
 
         factory.AddBelief("Nothing", () => false);
-
         factory.AddBelief("AgentIdle", () => !navMeshAgent.hasPath);
         factory.AddBelief("AgentMoving", () => navMeshAgent.hasPath);
-        factory.AddBelief("AgentHealthLow", () => health < 30);
-        factory.AddBelief("AgentIsHealthy", () => health >= 50);
-        factory.AddBelief("AgentStaminaLow", () => stamina < 10);
-        factory.AddBelief("AgentIsRested", () => stamina >= 50);
 
-        factory.AddLocationBelief("AgentAtDoorOne", 3f, doorOnePosition);
-        factory.AddLocationBelief("AgentAtDoorTwo", 3f, doorTwoPosition);
-        factory.AddLocationBelief("AgentAtRestingPosition", 3f, restingPosition);
-        factory.AddLocationBelief("AgentAtFoodShack", 3f, foodShack);
+        if (role == AgentRole.Survivor)
+        {
+            factory.AddBelief("AgentHealthLow", () => health < 30);
+            factory.AddBelief("AgentIsHealthy", () => health >= 50);
+            factory.AddBelief("AgentStaminaLow", () => stamina < 10);
+            factory.AddBelief("AgentIsRested", () => stamina >= 50);
 
-        factory.AddSensorBelief("PlayerInChaseRange", chaseSensor);
-        factory.AddSensorBelief("PlayerInAttackRange", attackSensor);
-        factory.AddBelief("AttackingPlayer", () => false);
+            factory.AddBelief("HasAnyWood", () => woodCount >= 1);
+            factory.AddBelief("HasAtLeast3Wood", () => woodCount >= 3);
+            factory.AddBelief("FireplaceHasAtLeast3Wood", () => fireplaceWood >= 3);
+            factory.AddBelief("NeedsWood", () => fireplaceWood <= 3);
+
+            factory.AddLocationBelief("AgentAtDoorOne", 3f, doorOnePosition);
+            factory.AddLocationBelief("AgentAtDoorTwo", 3f, doorTwoPosition);
+            factory.AddLocationBelief("AgentAtRestingPosition", 3f, restingPosition);
+            factory.AddLocationBelief("AgentAtFoodShack", 3f, foodShack);
+            factory.AddLocationBelief("AgentAtWoodShop", 5f, woodShopCounter_Survivor);
+            factory.AddLocationBelief("AgentAtFireplace", 3f, firePlace);
+        }
+        if (role == AgentRole.Woodworker)
+        {
+            factory.AddBelief("HasAnyWood", () => woodCount > 0);
+            factory.AddBelief("HasAtLeast3Wood", () => woodCount >= 3);
+
+            factory.AddLocationBelief("AgentAtWoodShop", 5f, woodShopCounter_Worker);
+            factory.AddLocationBelief("AgentAtForest", 3f, forestPosition);
+
+            factory.AddBelief("SurvivorAtWoodShop",() => Vector3.Distance(survivorRef.transform.position, woodShopCounter_Survivor.position) < 5f);
+
+            factory.AddBelief("SurvivorNeedsWood",() => survivorRef.woodCount < 3);
+
+            factory.AddBelief("RequestActiveAtCounter",
+                () => beliefs["SurvivorAtWoodShop"].Evaluate()
+                && beliefs["SurvivorNeedsWood"].Evaluate());
+
+            factory.AddBelief("SurvivorStocked3",
+                () => survivorRef != null && survivorRef.woodCount >= 3);
+        }
     }
-
     void SetupActions()
     {
         actions = new HashSet<AgentAction>();
 
         actions.Add(new AgentAction.Builder("Relax")
-            .WithStrategy(new IdleStrategy(5))
+            .WithStrategy(new IdleStrategy(3))
             .AddEffect(beliefs["Nothing"])
             .Build());
 
-        actions.Add(new AgentAction.Builder("Wander Around")
-            .WithStrategy(new WanderStrategy(navMeshAgent, 10))
-            .AddEffect(beliefs["AgentMoving"])
-            .Build());
+        if (role == AgentRole.Survivor)
+        {
+            actions.Add(new AgentAction.Builder("Wander Around")
+                .WithStrategy(new WanderStrategy(navMeshAgent, 10))
+                .AddEffect(beliefs["AgentMoving"])
+                .Build());
 
-        actions.Add(new AgentAction.Builder("MoveToEatingPosition")
-            .WithStrategy(new MoveStrategy(navMeshAgent, () => foodShack.position))
-            .AddEffect(beliefs["AgentAtFoodShack"])
-            .Build());
+            actions.Add(new AgentAction.Builder("MoveToEatingPosition")
+                .WithStrategy(new MoveStrategy(navMeshAgent, () => foodShack.position))
+                .AddEffect(beliefs["AgentAtFoodShack"])
+                .Build());
 
-        actions.Add(new AgentAction.Builder("Eat")
+            actions.Add(new AgentAction.Builder("Eat")
+                .WithStrategy(new IdleStrategy(5))
+                .AddPrecondition(beliefs["AgentAtFoodShack"])
+                .AddEffect(beliefs["AgentIsHealthy"])
+                .Build());
+
+            actions.Add(new AgentAction.Builder("MoveToDoorOne")
+                .WithStrategy(new MoveStrategy(navMeshAgent, () => doorOnePosition.position))
+                .AddEffect(beliefs["AgentAtDoorOne"])
+                .Build());
+
+            actions.Add(new AgentAction.Builder("MoveToDoorTwo")
+                .WithStrategy(new MoveStrategy(navMeshAgent, () => doorTwoPosition.position))
+                .AddEffect(beliefs["AgentAtDoorTwo"])
+                .Build());
+
+            actions.Add(new AgentAction.Builder("MoveFromDoorOneToRestArea")
+                .WithCost(2)
+                .WithStrategy(new MoveStrategy(navMeshAgent, () => restingPosition.position))
+                .AddPrecondition(beliefs["AgentAtDoorOne"])
+                .AddEffect(beliefs["AgentAtRestingPosition"])
+                .Build());
+
+            actions.Add(new AgentAction.Builder("MoveFromDoorTwoRestArea")
+                .WithStrategy(new MoveStrategy(navMeshAgent, () => restingPosition.position))
+                .AddPrecondition(beliefs["AgentAtDoorTwo"])
+                .AddEffect(beliefs["AgentAtRestingPosition"])
+                .Build());
+
+            actions.Add(new AgentAction.Builder("Rest")
+                .WithStrategy(new IdleStrategy(5))
+                .AddPrecondition(beliefs["AgentAtRestingPosition"])
+                .AddEffect(beliefs["AgentIsRested"])
+                .Build());
+
+            actions.Add(new AgentAction.Builder("MoveToWoodShop")
+                .WithStrategy(new MoveStrategy(navMeshAgent, () => woodShopCounter_Survivor.position))
+                .AddPrecondition(beliefs["NeedsWood"])
+                .AddEffect(beliefs["AgentAtWoodShop"])
+                .Build());
+
+            actions.Add(new AgentAction.Builder("WaitAtCounter")
+                .WithStrategy(new IdleStrategy(3))
+                .AddPrecondition(beliefs["AgentAtWoodShop"])
+                .AddEffect(beliefs["AgentIdle"])
+                .Build());
+
+            actions.Add(new AgentAction.Builder("MoveToFireplace")
+                .WithStrategy(new MoveStrategy(navMeshAgent, () => firePlace.position))
+                .AddPrecondition(beliefs["HasAnyWood"])
+                .AddEffect(beliefs["AgentAtFireplace"])
+                .Build());
+
+            actions.Add(new AgentAction.Builder("DepositAllWood")
+                .WithStrategy(new RepeatCallbackUntilStrategy(1f,
+                    () => woodCount == 0,
+                    () => { woodCount--; fireplaceWood++; }))
+                .AddPrecondition(beliefs["AgentAtFireplace"])
+                .AddPrecondition(beliefs["HasAnyWood"])
+                .AddEffect(beliefs["FireplaceHasAtLeast3Wood"])
+                .Build());
+            actions.Add(new AgentAction.Builder("WaitForWood")
             .WithStrategy(new IdleStrategy(5))
-            .AddPrecondition(beliefs["AgentAtFoodShack"])
-            .AddEffect(beliefs["AgentIsHealthy"])
+            .AddPrecondition(beliefs["AgentAtWoodShop"])
+            .AddPrecondition(beliefs["NeedsWood"])
+            .AddEffect(beliefs["HasAtLeast3Wood"])
             .Build());
+        }
 
-        actions.Add(new AgentAction.Builder("MoveToDoorOne")
-            .WithStrategy(new MoveStrategy(navMeshAgent, () => doorOnePosition.position))
-            .AddEffect(beliefs["AgentAtDoorOne"])
-            .Build());
+        if (role == AgentRole.Woodworker)
+        {
+            actions.Add(new AgentAction.Builder("ReturnToShop")
+                .WithStrategy(new MoveStrategy(navMeshAgent, () => woodShopCounter_Worker.position))
+                .AddEffect(beliefs["AgentAtWoodShop"])
+                .Build());
 
-        actions.Add(new AgentAction.Builder("MoveToDoorTwo")
-            .WithStrategy(new MoveStrategy(navMeshAgent, () => doorTwoPosition.position))
-            .AddEffect(beliefs["AgentAtDoorTwo"])
-            .Build());
+            actions.Add(new AgentAction.Builder("IdleAtShop")
+                .WithStrategy(new IdleStrategy(1))
+                .AddPrecondition(beliefs["AgentAtWoodShop"])
+                .AddEffect(beliefs["AgentIdle"])
+                .Build());
 
-        actions.Add(new AgentAction.Builder("MoveFromDoorOneToRestArea")
-            .WithCost(2)
-            .WithStrategy(new MoveStrategy(navMeshAgent, () => restingPosition.position))
-            .AddPrecondition(beliefs["AgentAtDoorOne"])
-            .AddEffect(beliefs["AgentAtRestingPosition"])
-            .Build());
+            actions.Add(new AgentAction.Builder("GoToForestForRequest")
+                .WithStrategy(new MoveStrategy(navMeshAgent, () => forestPosition.position))
+                .AddPrecondition(beliefs["SurvivorNeedsWood"])
+                .AddEffect(beliefs["AgentAtForest"])
+                .Build());
 
-        actions.Add(new AgentAction.Builder("MoveFromDoorTwoRestArea")
-            .WithStrategy(new MoveStrategy(navMeshAgent, () => restingPosition.position))
-            .AddPrecondition(beliefs["AgentAtDoorTwo"])
-            .AddEffect(beliefs["AgentAtRestingPosition"])
-            .Build());
+            actions.Add(new AgentAction.Builder("ChopUntilThree")
+                .WithStrategy(new RepeatCallbackUntilStrategy(1f,
+                    () => woodCount >= 3,
+                    () => woodCount = Mathf.Min(woodCount + 1, 4)))
+                .AddPrecondition(beliefs["AgentAtForest"])
+                .AddEffect(beliefs["HasAtLeast3Wood"])
+                .AddEffect(beliefs["HasAnyWood"])
+                .Build());
 
-        actions.Add(new AgentAction.Builder("Rest")
-            .WithStrategy(new IdleStrategy(5))
-            .AddPrecondition(beliefs["AgentAtRestingPosition"])
-            .AddEffect(beliefs["AgentIsRested"])
-            .Build());
+            actions.Add(new AgentAction.Builder("ReturnToCounterWithWood")
+                .WithStrategy(new MoveStrategy(navMeshAgent, () => woodShopCounter_Worker.position))
+                .AddPrecondition(beliefs["HasAtLeast3Wood"])
+                .AddEffect(beliefs["AgentAtWoodShop"])
+                .Build());
 
-        actions.Add(new AgentAction.Builder("ChasePlayer")
-            .WithStrategy(new MoveStrategy(navMeshAgent, () => beliefs["PlayerInChaseRange"].Location))
-            .AddPrecondition(beliefs["PlayerInChaseRange"])
-            .AddEffect(beliefs["PlayerInAttackRange"])
-            .Build());
+            actions.Add(new AgentAction.Builder("GiveWoodToSurvivor")
+                .WithStrategy(new RepeatCallbackUntilStrategy(1f,
+                    () => woodCount == 0,
+                    () =>
+                    {
+                        if (survivorRef == null || woodCount <= 0) return;
 
-        actions.Add(new AgentAction.Builder("AttackPlayer")
-            .WithStrategy(new AttackStrategy(2f))
-            .AddPrecondition(beliefs["PlayerInAttackRange"])
-            .AddEffect(beliefs["AttackingPlayer"])
-            .Build());
+                        bool survivorInPlace = Vector3.Distance(
+                            survivorRef.transform.position, woodShopCounter_Survivor.position) < handoffRadius;
+
+                        bool workerInPlace = Vector3.Distance(
+                            transform.position, woodShopCounter_Worker.position) < handoffRadius;
+
+                        bool closeToEachOther = Vector3.Distance(
+                            transform.position, survivorRef.transform.position) < handoffRadius;
+
+                        if ((survivorInPlace && workerInPlace) || closeToEachOther)
+                        {
+                            woodCount--;
+                            survivorRef.woodCount = Mathf.Min(survivorRef.woodCount + 1, 3);
+                        }
+                    }))
+                .AddPrecondition(beliefs["HasAnyWood"])
+                .AddPrecondition(beliefs["AgentAtWoodShop"])
+                .AddEffect(beliefs["SurvivorStocked3"])
+                .Build());
+        }
     }
+
 
     void SetupGoals()
     {
@@ -160,31 +305,53 @@ public class GoapAgent : MonoBehaviour
             .WithDesiredEffect(beliefs["Nothing"])
             .Build());
 
-        goals.Add(new AgentGoal.Builder("Wander")
-            .WithPriority(1)
-            .WithDesiredEffect(beliefs["AgentMoving"])
-            .Build());
+        if (role == AgentRole.Survivor)
+        {
+            goals.Add(new AgentGoal.Builder("Wander")
+                .WithPriority(1)
+                .WithDesiredEffect(beliefs["AgentMoving"])
+                .Build());
 
-        goals.Add(new AgentGoal.Builder("KeepHealthUp")
-            .WithPriority(4)
-            .WithDesiredEffect(beliefs["AgentIsHealthy"])
-            .Build());
+            goals.Add(new AgentGoal.Builder("KeepHealthUp")
+                .WithPriority(4)
+                .WithDesiredEffect(beliefs["AgentIsHealthy"])
+                .Build());
 
-        goals.Add(new AgentGoal.Builder("KeepStaminaUp")
-            .WithPriority(2)
-            .WithDesiredEffect(beliefs["AgentIsRested"])
-            .Build());
+            goals.Add(new AgentGoal.Builder("KeepStaminaUp")
+                .WithPriority(2)
+                .WithDesiredEffect(beliefs["AgentIsRested"])
+                .Build());
 
-        goals.Add(new AgentGoal.Builder("SeekAndDestroy")
-            .WithPriority(3)
-            .WithDesiredEffect(beliefs["AttackingPlayer"])
-            .Build());
+            goals.Add(new AgentGoal.Builder("GoToCounterWhenLow")
+                .WithPriority(3)
+                .WithDesiredEffect(beliefs["HasAtLeast3Wood"])
+                .Build());
+
+            goals.Add(new AgentGoal.Builder("StockFireplaceTo3")
+                .WithPriority(3)
+                .WithDesiredEffect(beliefs["FireplaceHasAtLeast3Wood"])
+                .Build());
+        }
+
+        if (role == AgentRole.Woodworker)
+        {
+            goals.Add(new AgentGoal.Builder("StayAtCounter")
+                .WithPriority(1)
+                .WithDesiredEffect(beliefs["AgentAtWoodShop"])
+                .Build());
+
+            goals.Add(new AgentGoal.Builder("FulfillSurvivorRequest")
+                .WithPriority(2)
+                .WithDesiredEffect(beliefs["SurvivorStocked3"])
+                .Build());
+        }
     }
 
     void SetupTimers()
     {
         statsTimer = new CountdownTimer(2f);
-        statsTimer.OnTimerStop += () => {
+        statsTimer.OnTimerStop += () =>
+        {
             UpdateStats();
             statsTimer.Start();
         };
@@ -193,10 +360,10 @@ public class GoapAgent : MonoBehaviour
 
     void UpdateStats()
     {
-        stamina += InRangeOf(restingPosition.position, 3f) ? 20 : -10;
-        health += InRangeOf(foodShack.position, 3f) ? 20 : -5;
-        stamina = Mathf.Clamp(stamina, 0, 100);
-        health = Mathf.Clamp(health, 0, 100);
+        //stamina += InRangeOf(restingPosition.position, 3f) ? 20 : -10;
+        //health += InRangeOf(foodShack.position, 3f) ? 20 : -5;
+        //stamina = Mathf.Clamp(stamina, 0, 100);
+        //health = Mathf.Clamp(health, 0, 100);
     }
 
     bool InRangeOf(Vector3 pos, float range) => Vector3.Distance(transform.position, pos) < range;
@@ -226,20 +393,20 @@ public class GoapAgent : MonoBehaviour
                 currentGoal = actionPlan.AgentGoal;
                 currentAction = actionPlan.Actions.Pop();
 
-                bool allPreconditionsMet = true; 
+                bool allPreconditionsMet = true;
 
                 foreach (var b in currentAction.Preconditions)
                 {
                     if (!b.Evaluate())
                     {
-                        Debug.LogWarning($"[GOAP] Belief '{b.Name}' failed for action '{currentAction.Name}'");
+                        Debug.LogWarning($"[GOAP][{gameObject.tag}/{role}] '{b.Name}' failed for '{currentAction.Name}'");
                         allPreconditionsMet = false;
                     }
                 }
 
                 if (allPreconditionsMet)
                 {
-                    Debug.Log($"[GOAP] Starting action: {currentAction.Name}");
+                    Debug.Log($"[GOAP] [{gameObject.tag}/{role}]Starting action: {currentAction.Name}");
                     currentAction.Start();
                 }
                 else
@@ -272,12 +439,12 @@ public class GoapAgent : MonoBehaviour
     }
 
     void CalculatePlan()
-    {Debug.Log("plan");
+    {
+        Debug.Log("plan");
         var priorityLevel = currentGoal?.Priority ?? 0;
 
         HashSet<AgentGoal> goalsToCheck = goals;
 
-        // If we have a current goal, we only want to check goals with higher priority
         if (currentGoal != null)
         {
             Debug.Log("Current goal exists, checking goals with higher priority");
@@ -291,10 +458,15 @@ public class GoapAgent : MonoBehaviour
         }
         try
         {
-            Debug.Log($"{priorityLevel} - {currentGoal.Name}");
+            Debug.Log($"[{gameObject.tag}/{role}]{priorityLevel} - {currentGoal.Name}");
         }
         catch
         {
         }
     }
+    public void ReceiveWood(int amount = 1)
+    {
+        fireplaceWood = Mathf.Clamp(fireplaceWood + amount, 0, 3);
+    }
+
 }
