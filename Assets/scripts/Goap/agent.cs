@@ -23,6 +23,7 @@ public class GoapAgent : MonoBehaviour
     
 
     [Header("Stats")]
+    public float FireTimer = 10;
     public float health = 100;
     public float stamina = 100;
     public int woodCount = 0;
@@ -30,6 +31,7 @@ public class GoapAgent : MonoBehaviour
     [SerializeField] float handoffRadius = 5f;
 
     CountdownTimer statsTimer;
+    CountdownTimer firewoodBurnTimer;
 
     GameObject target;
     Vector3 destination;
@@ -50,6 +52,7 @@ public class GoapAgent : MonoBehaviour
     IGoapPlanner gPlanner;
 
     public bool allPreconditionsMet = true;
+    public bool FireInFirePlace = true;
     public enum AgentRole { Survivor, Woodworker }
 
     [Header("Role Settings")]
@@ -346,22 +349,43 @@ public class GoapAgent : MonoBehaviour
 
     void SetupTimers()
     {
-        statsTimer = new CountdownTimer(2f);
-        statsTimer.OnTimerStop += () =>
+        if (role == AgentRole.Survivor)
         {
-            if (role == AgentRole.Survivor)
+            Debug.LogError($"{role}: starting timers");
+            statsTimer = new CountdownTimer(2f);
+            statsTimer.OnTimerStop += () =>
             {
+                Debug.LogError($"{role}: in update");
                 UpdateStats();
-            }
+                statsTimer.Start();
+            };
             statsTimer.Start();
-        };
-        statsTimer.Start();
+
+            firewoodBurnTimer = new CountdownTimer(FireTimer);
+            firewoodBurnTimer.OnTimerStop += () =>
+            {
+                Debug.LogError($"{role}: in firewood");
+                UpdateFireWood();
+                firewoodBurnTimer.Start();
+
+            };
+                firewoodBurnTimer.Start();
+        }
+    }
+
+    void UpdateFireWood()
+    {
+        Debug.LogError($"{role}: MY WOOD!");
+        if (fireplaceWood >= 1)
+        {
+            fireplaceWood = Mathf.Max(0, fireplaceWood - 1);
+        }
     }
 
     void UpdateStats()
     {
-        Debug.Log($"{role} updated stats");
-        //stamina += InRangeOf(restingPosition.position, 3f) ? 20 : -10;
+        //Debug.Log($"{role} updated stats");
+        //stamina += InRangeOf(restingPosition.position, 3f) ? 20 : Random.Range(-1,-10);
         //health += InRangeOf(foodShack.position, 3f) ? 20 : -5;
         //stamina = Mathf.Clamp(stamina, 0, 100);
         //health = Mathf.Clamp(health, 0, 100);
@@ -380,8 +404,14 @@ public class GoapAgent : MonoBehaviour
 
     void Update()
     {
-        statsTimer.Tick(Time.deltaTime);
-
+        if(role == AgentRole.Survivor)
+        {
+            statsTimer.Tick(Time.deltaTime);
+            if (fireplaceWood > 0)
+            {
+            firewoodBurnTimer.Tick( Time.deltaTime);
+            }
+        }
         if (currentAction == null)
         {
             Debug.Log("Calculating any potential new plan");
