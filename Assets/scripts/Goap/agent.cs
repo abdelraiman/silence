@@ -113,7 +113,7 @@ public class GoapAgent : MonoBehaviour
             factory.AddBelief("HasAnyWood", () => woodCount >= 1);
             factory.AddBelief("HasAtLeast3Wood", () => woodCount >= 3);
             factory.AddBelief("FireplaceHasAtLeast3Wood", () => fireplaceWood >= 3);
-            factory.AddBelief("NeedsWood", () => fireplaceWood <= 3);
+            factory.AddBelief("NeedsWood", () => fireplaceWood <= 1);
 
             factory.AddLocationBelief("AgentAtDoorOne", 3f, doorOnePosition);
             factory.AddLocationBelief("AgentAtDoorTwo", 3f, doorTwoPosition);
@@ -197,18 +197,25 @@ public class GoapAgent : MonoBehaviour
                 .AddPrecondition(beliefs["AgentAtRestingPosition"])
                 .AddEffect(beliefs["AgentIsRested"])
                 .Build());
-
+           // -----------------------------------------WOOD-------------------------------------------------//
+            
             actions.Add(new AgentAction.Builder("MoveToWoodShop")
                 .WithStrategy(new MoveStrategy(navMeshAgent, () => woodShopCounter_Survivor.position))
                 .AddPrecondition(beliefs["NeedsWood"])
                 .AddEffect(beliefs["AgentAtWoodShop"])
                 .Build());
 
-            actions.Add(new AgentAction.Builder("WaitAtCounter")
-                .WithStrategy(new IdleStrategy(3))
+            actions.Add(new AgentAction.Builder("WaitForWood")
+                .WithStrategy(new RepeatCallbackUntilStrategy(2f,
+                    () => woodCount >= 3,     
+                    () => {}
+                ))
                 .AddPrecondition(beliefs["AgentAtWoodShop"])
-                .AddEffect(beliefs["AgentIdle"])
+                .AddPrecondition(beliefs["NeedsWood"])
+                .AddEffect(beliefs["HasAtLeast3Wood"])
+                .AddEffect(beliefs["HasAnyWood"])
                 .Build());
+
 
             actions.Add(new AgentAction.Builder("MoveToFireplace")
                 .WithStrategy(new MoveStrategy(navMeshAgent, () => firePlace.position))
@@ -222,14 +229,9 @@ public class GoapAgent : MonoBehaviour
                     () => { woodCount--; fireplaceWood++; }))
                 .AddPrecondition(beliefs["AgentAtFireplace"])
                 .AddPrecondition(beliefs["HasAnyWood"])
+                .AddPrecondition(beliefs["HasAtLeast3Wood"])
                 .AddEffect(beliefs["FireplaceHasAtLeast3Wood"])
                 .Build());
-            actions.Add(new AgentAction.Builder("WaitForWood")
-            .WithStrategy(new IdleStrategy(5))
-            .AddPrecondition(beliefs["AgentAtWoodShop"])
-            .AddPrecondition(beliefs["NeedsWood"])
-            .AddEffect(beliefs["HasAtLeast3Wood"])
-            .Build());
         }
 
         if (role == AgentRole.Woodworker)
@@ -248,6 +250,7 @@ public class GoapAgent : MonoBehaviour
             actions.Add(new AgentAction.Builder("GoToForestForRequest")
                 .WithStrategy(new MoveStrategy(navMeshAgent, () => forestPosition.position))
                 .AddPrecondition(beliefs["SurvivorNeedsWood"])
+                .AddPrecondition(beliefs["RequestActiveAtCounter"])
                 .AddEffect(beliefs["AgentAtForest"])
                 .Build());
 
@@ -295,7 +298,6 @@ public class GoapAgent : MonoBehaviour
         }
     }
 
-
     void SetupGoals()
     {
         goals = new HashSet<AgentGoal>();
@@ -322,12 +324,7 @@ public class GoapAgent : MonoBehaviour
                 .WithDesiredEffect(beliefs["AgentIsRested"])
                 .Build());
 
-            goals.Add(new AgentGoal.Builder("GoToCounterWhenLow")
-                .WithPriority(3)
-                .WithDesiredEffect(beliefs["HasAtLeast3Wood"])
-                .Build());
-
-            goals.Add(new AgentGoal.Builder("StockFireplaceTo3")
+            goals.Add(new AgentGoal.Builder("StockFireplaceTWhenLow")
                 .WithPriority(3)
                 .WithDesiredEffect(beliefs["FireplaceHasAtLeast3Wood"])
                 .Build());
@@ -341,7 +338,7 @@ public class GoapAgent : MonoBehaviour
                 .Build());
 
             goals.Add(new AgentGoal.Builder("FulfillSurvivorRequest")
-                .WithPriority(2)
+                .WithPriority(3)
                 .WithDesiredEffect(beliefs["SurvivorStocked3"])
                 .Build());
         }
@@ -352,7 +349,10 @@ public class GoapAgent : MonoBehaviour
         statsTimer = new CountdownTimer(2f);
         statsTimer.OnTimerStop += () =>
         {
-            UpdateStats();
+            if (role == AgentRole.Survivor)
+            {
+                UpdateStats();
+            }
             statsTimer.Start();
         };
         statsTimer.Start();
@@ -360,6 +360,7 @@ public class GoapAgent : MonoBehaviour
 
     void UpdateStats()
     {
+        Debug.Log($"{role} updated stats");
         //stamina += InRangeOf(restingPosition.position, 3f) ? 20 : -10;
         //health += InRangeOf(foodShack.position, 3f) ? 20 : -5;
         //stamina = Mathf.Clamp(stamina, 0, 100);
