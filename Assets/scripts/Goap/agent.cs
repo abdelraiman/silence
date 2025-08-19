@@ -351,11 +351,11 @@ public class GoapAgent : MonoBehaviour
     {
         if (role == AgentRole.Survivor)
         {
-            Debug.LogError($"{role}: starting timers");
+            //Debug.LogError($"{role}: starting timers");
             statsTimer = new CountdownTimer(2f);
             statsTimer.OnTimerStop += () =>
             {
-                Debug.LogError($"{role}: in update");
+                //Debug.LogError($"{role}: in update");
                 UpdateStats();
                 statsTimer.Start();
             };
@@ -364,7 +364,7 @@ public class GoapAgent : MonoBehaviour
             firewoodBurnTimer = new CountdownTimer(FireTimer);
             firewoodBurnTimer.OnTimerStop += () =>
             {
-                Debug.LogError($"{role}: in firewood");
+                //Debug.LogError($"{role}: in firewood");
                 UpdateFireWood();
                 firewoodBurnTimer.Start();
 
@@ -375,7 +375,7 @@ public class GoapAgent : MonoBehaviour
 
     void UpdateFireWood()
     {
-        Debug.LogError($"{role}: MY WOOD!");
+        //Debug.LogError($"{role}: MY WOOD!");
         if (fireplaceWood >= 1)
         {
             fireplaceWood = Mathf.Max(0, fireplaceWood - 1);
