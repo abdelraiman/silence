@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.AI;
+using static PlayerController;
 
-[RequireComponent(typeof(NavMeshAgent))]
 public class GoapAgent : MonoBehaviour
 {
     [Header("Sensors")]
@@ -20,7 +19,11 @@ public class GoapAgent : MonoBehaviour
     [SerializeField] Transform firePlace;
     [SerializeField] Transform forestPosition;
 
-    
+    [Header("Movement")]
+    [SerializeField] Transform mover;       
+    [SerializeField] float moveSpeed = 10f;
+    MovementState movementState = new();
+    Rigidbody rb;
 
     [Header("Stats")]
     public float FireTimer = 10;
@@ -42,8 +45,7 @@ public class GoapAgent : MonoBehaviour
     public AgentAction currentAction;
 
     [SerializeField] GoapAgent survivorRef;
-    NavMeshAgent navMeshAgent;
-    Rigidbody rb;
+
     public Dictionary<string, AgentBelief> beliefs;
     public HashSet<AgentAction> actions;
     public HashSet<AgentGoal> goals;
@@ -60,10 +62,12 @@ public class GoapAgent : MonoBehaviour
 
     void Awake()
     {
-        navMeshAgent = GetComponent<NavMeshAgent>();
-        navMeshAgent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+        if (mover == null)
+        {
+            mover = transform;
+        }
         gFactory = UnityServiceLocator.ServiceLocator.Global.Get<GoapFactory>();
         gPlanner = gFactory.CreatePlanner();
         
@@ -103,8 +107,8 @@ public class GoapAgent : MonoBehaviour
         BeliefFactory factory = new BeliefFactory(this, beliefs);
 
         factory.AddBelief("Nothing", () => false);
-        factory.AddBelief("AgentIdle", () => !navMeshAgent.hasPath);
-        factory.AddBelief("AgentMoving", () => navMeshAgent.hasPath);
+        factory.AddBelief("AgentIdle", () => !movementState.HasPath);
+        factory.AddBelief("AgentMoving", () => movementState.HasPath);
 
         if (role == AgentRole.Survivor)
         {
@@ -156,13 +160,13 @@ public class GoapAgent : MonoBehaviour
 
         if (role == AgentRole.Survivor)
         {
-            actions.Add(new AgentAction.Builder("Wander Around")
-                .WithStrategy(new WanderStrategy(navMeshAgent, 10))
-                .AddEffect(beliefs["AgentMoving"])
-                .Build());
+           // actions.Add(new AgentAction.Builder("Wander Around")
+           //     .WithStrategy(new WanderStrategy(navMeshAgent, 10))
+           //     .AddEffect(beliefs["AgentMoving"])
+           //     .Build());
 
             actions.Add(new AgentAction.Builder("MoveToEatingPosition")
-                .WithStrategy(new MoveStrategy(navMeshAgent, () => foodShack.position))
+                .WithStrategy(new MoveStrategy(mover, () => foodShack.position, movementState, moveSpeed))
                 .AddEffect(beliefs["AgentAtFoodShack"])
                 .Build());
 
@@ -172,38 +176,38 @@ public class GoapAgent : MonoBehaviour
                 .AddEffect(beliefs["AgentIsHealthy"])
                 .Build());
 
-            actions.Add(new AgentAction.Builder("MoveToDoorOne")
-                .WithStrategy(new MoveStrategy(navMeshAgent, () => doorOnePosition.position))
-                .AddEffect(beliefs["AgentAtDoorOne"])
-                .Build());
-
-            actions.Add(new AgentAction.Builder("MoveToDoorTwo")
-                .WithStrategy(new MoveStrategy(navMeshAgent, () => doorTwoPosition.position))
-                .AddEffect(beliefs["AgentAtDoorTwo"])
-                .Build());
-
-            actions.Add(new AgentAction.Builder("MoveFromDoorOneToRestArea")
-                .WithCost(2)
-                .WithStrategy(new MoveStrategy(navMeshAgent, () => restingPosition.position))
-                .AddPrecondition(beliefs["AgentAtDoorOne"])
-                .AddEffect(beliefs["AgentAtRestingPosition"])
-                .Build());
-
-            actions.Add(new AgentAction.Builder("MoveFromDoorTwoRestArea")
-                .WithStrategy(new MoveStrategy(navMeshAgent, () => restingPosition.position))
-                .AddPrecondition(beliefs["AgentAtDoorTwo"])
-                .AddEffect(beliefs["AgentAtRestingPosition"])
-                .Build());
-
-            actions.Add(new AgentAction.Builder("Rest")
-                .WithStrategy(new IdleStrategy(5))
-                .AddPrecondition(beliefs["AgentAtRestingPosition"])
-                .AddEffect(beliefs["AgentIsRested"])
-                .Build());
+            //actions.Add(new AgentAction.Builder("MoveToDoorOne")
+            //    .WithStrategy(new MoveStrategy(navMeshAgent, () => doorOnePosition.position))
+            //    .AddEffect(beliefs["AgentAtDoorOne"])
+            //    .Build());
+            //
+            //actions.Add(new AgentAction.Builder("MoveToDoorTwo")
+            //    .WithStrategy(new MoveStrategy(navMeshAgent, () => doorTwoPosition.position))
+            //    .AddEffect(beliefs["AgentAtDoorTwo"])
+            //    .Build());
+            //
+            //actions.Add(new AgentAction.Builder("MoveFromDoorOneToRestArea")
+            //    .WithCost(2)
+            //    .WithStrategy(new MoveStrategy(navMeshAgent, () => restingPosition.position))
+            //    .AddPrecondition(beliefs["AgentAtDoorOne"])
+            //    .AddEffect(beliefs["AgentAtRestingPosition"])
+            //    .Build());
+            //
+            //actions.Add(new AgentAction.Builder("MoveFromDoorTwoRestArea")
+            //    .WithStrategy(new MoveStrategy(navMeshAgent, () => restingPosition.position))
+            //    .AddPrecondition(beliefs["AgentAtDoorTwo"])
+            //    .AddEffect(beliefs["AgentAtRestingPosition"])
+            //    .Build());
+            //
+            //actions.Add(new AgentAction.Builder("Rest")
+            //    .WithStrategy(new IdleStrategy(5))
+            //    .AddPrecondition(beliefs["AgentAtRestingPosition"])
+            //    .AddEffect(beliefs["AgentIsRested"])
+            //    .Build());
            // -----------------------------------------WOOD-------------------------------------------------//
             
             actions.Add(new AgentAction.Builder("MoveToWoodShop")
-                .WithStrategy(new MoveStrategy(navMeshAgent, () => woodShopCounter_Survivor.position))
+                .WithStrategy(new MoveStrategy(mover, () => woodShopCounter_Survivor.position, movementState, moveSpeed))
                 .AddPrecondition(beliefs["NeedsWood"])
                 .AddEffect(beliefs["AgentAtWoodShop"])
                 .Build());
@@ -221,7 +225,7 @@ public class GoapAgent : MonoBehaviour
 
 
             actions.Add(new AgentAction.Builder("MoveToFireplace")
-                .WithStrategy(new MoveStrategy(navMeshAgent, () => firePlace.position))
+                .WithStrategy(new MoveStrategy(mover, () => firePlace.position, movementState, moveSpeed))
                 .AddPrecondition(beliefs["HasAnyWood"])
                 .AddEffect(beliefs["AgentAtFireplace"])
                 .Build());
@@ -240,7 +244,7 @@ public class GoapAgent : MonoBehaviour
         if (role == AgentRole.Woodworker)
         {
             actions.Add(new AgentAction.Builder("ReturnToShop")
-                .WithStrategy(new MoveStrategy(navMeshAgent, () => woodShopCounter_Worker.position))
+                .WithStrategy(new MoveStrategy(mover, () => woodShopCounter_Worker.position, movementState, moveSpeed))
                 .AddEffect(beliefs["AgentAtWoodShop"])
                 .Build());
 
@@ -251,7 +255,7 @@ public class GoapAgent : MonoBehaviour
                 .Build());
 
             actions.Add(new AgentAction.Builder("GoToForestForRequest")
-                .WithStrategy(new MoveStrategy(navMeshAgent, () => forestPosition.position))
+                .WithStrategy(new MoveStrategy(mover, () => forestPosition.position, movementState, moveSpeed))
                 .AddPrecondition(beliefs["SurvivorNeedsWood"])
                 .AddPrecondition(beliefs["RequestActiveAtCounter"])
                 .AddEffect(beliefs["AgentAtForest"])
@@ -267,7 +271,7 @@ public class GoapAgent : MonoBehaviour
                 .Build());
 
             actions.Add(new AgentAction.Builder("ReturnToCounterWithWood")
-                .WithStrategy(new MoveStrategy(navMeshAgent, () => woodShopCounter_Worker.position))
+                .WithStrategy(new MoveStrategy(mover, () => woodShopCounter_Worker.position, movementState, moveSpeed))
                 .AddPrecondition(beliefs["HasAtLeast3Wood"])
                 .AddEffect(beliefs["AgentAtWoodShop"])
                 .Build());
@@ -312,10 +316,10 @@ public class GoapAgent : MonoBehaviour
 
         if (role == AgentRole.Survivor)
         {
-            goals.Add(new AgentGoal.Builder("Wander")
-                .WithPriority(1)
-                .WithDesiredEffect(beliefs["AgentMoving"])
-                .Build());
+            //goals.Add(new AgentGoal.Builder("Wander")
+            //    .WithPriority(1)
+            //    .WithDesiredEffect(beliefs["AgentMoving"])
+            //    .Build());
 
             goals.Add(new AgentGoal.Builder("KeepHealthUp")
                 .WithPriority(4)
@@ -398,6 +402,9 @@ public class GoapAgent : MonoBehaviour
 
     void HandleTargetChanged()
     {
+        movementState.HasPath = false;
+        movementState.IsMoving = false;
+
         currentAction = null;
         currentGoal = null;
     }
@@ -419,7 +426,8 @@ public class GoapAgent : MonoBehaviour
 
             if (actionPlan != null && actionPlan.Actions.Count > 0)
             {
-                navMeshAgent.ResetPath();
+                movementState.HasPath = false;
+                movementState.IsMoving = false;
 
                 currentGoal = actionPlan.AgentGoal;
                 currentAction = actionPlan.Actions.Pop();
@@ -443,6 +451,8 @@ public class GoapAgent : MonoBehaviour
                 else
                 {
                     Debug.LogWarning($"[GOAP] Preconditions not met for: {currentAction.Name}. Aborting.");
+                    movementState.HasPath = false;
+                    movementState.IsMoving = false;
 
                     currentAction = null;
                     currentGoal = null;
