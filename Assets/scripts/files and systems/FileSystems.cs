@@ -8,14 +8,16 @@ using UnityEngine.Rendering;
 public class FileSystems : MonoBehaviour
 { 
     public string filename = "wall.jpeg";
-    public string folderpath = Application.streamingAssetsPath;
+    public string materialDataFileName = "bodyMaterialData.json";
+    private string materialDataFilePath;
     private string CombinedFilePathLocation;
 
     void OnEnable()
     {
         Debug.Log("Ive been enabled");
 
-        CombinedFilePathLocation = Path.Combine(folderpath, filename);
+        CombinedFilePathLocation = Path.Combine(Application.streamingAssetsPath, filename);
+        materialDataFilePath = Path.Combine(Application.streamingAssetsPath, materialDataFileName);
         LoadPlayer();
         Laodtextxr();
         
@@ -52,6 +54,7 @@ public class FileSystems : MonoBehaviour
     {
         Debug.Log("loading player stuff");
         string streamingAssetsPath = Application.streamingAssetsPath;
+        
         if (Directory.Exists(streamingAssetsPath))
         {
             Debug.Log("streaming aassets looks good");
@@ -63,9 +66,33 @@ public class FileSystems : MonoBehaviour
             Debug.Log("Added streamingAssetsPath and can be found at" + streamingAssetsPath);
         }
 
-        if (File.Exists(Path.Combine(Application.streamingAssetsPath, "body matirial.mat")))
+        if (File.Exists(materialDataFilePath))
         {
+
             Debug.Log("he has SKIN!");
+
+            string json = File.ReadAllText(materialDataFilePath);
+            MaterialData materialData = JsonUtility.FromJson<MaterialData>(json);
+
+            Material material = new Material(Shader.Find(materialData.shader));
+
+            material.color = new Color(materialData.color.r, materialData.color.g, materialData.color.b, materialData.color.a);
+
+            material.SetFloat("_Smoothness", materialData.smoothness);
+
+
+            GameObject[] objects = GameObject.FindGameObjectsWithTag("PlayerBody");
+
+            foreach (GameObject obj in objects)
+            {
+                Renderer renderer = obj.GetComponent<Renderer>();
+
+                if (renderer != null)
+                {
+                    renderer.material = material;
+                    Debug.Log("Material applied to: " + obj.name);
+                }                 
+            }
         }
         else
         {
@@ -73,11 +100,27 @@ public class FileSystems : MonoBehaviour
             Material newMat = new Material(Shader.Find("Standard"));
             newMat.color = Color.blue;
 
-            GameObject[] objects = GameObject.FindGameObjectsWithTag("Player");
+            GameObject[] objects = GameObject.FindGameObjectsWithTag("PlayerBody");
             foreach (GameObject obj in objects)
             {
                 obj.GetComponent<Renderer>().material = newMat;
             }
         }
+    }
+    [System.Serializable]
+    public class MaterialData
+    {
+        public string shader;
+        public ColorData color;
+        public float smoothness;
+    }
+
+    [System.Serializable]
+    public class ColorData
+    {
+        public float r;
+        public float g;
+        public float b;
+        public float a;
     }
 }

@@ -13,13 +13,14 @@ public class takedownscript : MonoBehaviour
     public KeyCode interact = KeyCode.E;
     RaycastHit hit;
     public GameObject enemy;
-    public GameObject EIndicator;
-    public TextMeshProUGUI input;
-    
+    //public GameObject EIndicator;
+    //public TextMeshProUGUI input;
+    public CloudSave CloudSave;
+
     void Start()
     {
-        EIndicator.SetActive(false);
-        input.text = ""+interact;
+        //EIndicator.SetActive(false);
+        //input.text = ""+interact;
         
     }
 
@@ -32,6 +33,7 @@ public class takedownscript : MonoBehaviour
             Debug.Log("assasinated");
             if (enemy != null)
             {
+                CloudSave.addDeath();
                 enemy.GetComponentInParent<enemyTakedown>().tookdown();
                 enemy.GetComponentInParent<NavMeshAgent>().isStopped=true;
                 Debug.Log("enemy killed");
@@ -45,16 +47,16 @@ public class takedownscript : MonoBehaviour
         {
             //Debug.Log(hit.transform.name);
 
-            if (hit.collider.tag == "enemy")
+            if (hit.collider.tag == "enemy box")
             {
                 enemy = hit.collider.gameObject;
-                EIndicator.SetActive(true);
+                //EIndicator.SetActive(true);
                 takedown = true;
             }
             else
             {
                 takedown = false;
-                EIndicator.SetActive(false);
+                //EIndicator.SetActive(false);
             }
         }
         else
@@ -65,7 +67,7 @@ public class takedownscript : MonoBehaviour
         void off()
         {
             takedown = false;
-            EIndicator.SetActive(false);
+           // EIndicator.SetActive(false);
         }
     }
 

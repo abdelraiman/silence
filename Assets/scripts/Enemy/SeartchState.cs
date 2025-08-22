@@ -16,6 +16,7 @@ public class SeartchState : BaseState
 
     public override void Preform()
     {
+        enemy.sawplayer = false;
         if (enemy.canseeplayer())
         {
             stateMachine.Changstate(new attackState());

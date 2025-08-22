@@ -3,18 +3,22 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+
 public class PlayerController : MonoBehaviour
 {
     [Header("system")]
     float horizontalInput;
     float verticalInput;
     public float gravity;
-
+    public GameObject Sbuttons;
+    public GameObject Lbuttons;
+    public GameObject Rbuttons;
+    public GameObject Spottedtxt;
     public movmentstate state;
     Vector3 moveDirection;
     Rigidbody rb;
     public LayerMask Ground;
-
+    public CloudSave CloudSave;
     private string CombinedFilePath;
     public string FileName = "jump.wav";
     public string FolderName = "audio";
@@ -73,7 +77,7 @@ public class PlayerController : MonoBehaviour
         rb.freezeRotation = true;
 
         canJump = true;
-
+        Spottedtxt.SetActive(false);
 
         if (audioSource == null)
         {
@@ -89,6 +93,8 @@ public class PlayerController : MonoBehaviour
         MyInputs();
         speedCom();
         states();
+     
+        
 
         if (grounded)
             rb.drag = GDrag;
@@ -105,6 +111,21 @@ public class PlayerController : MonoBehaviour
 
     void MyInputs()
     {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            Sbuttons.SetActive(true);
+            Lbuttons.SetActive(true);
+            Rbuttons.SetActive(true);
+            Time.timeScale = 0f;
+        }
+        else if (Input.GetKeyUp(KeyCode.Tab))
+        {
+            Sbuttons.SetActive(false);
+            Lbuttons.SetActive(false);
+            Rbuttons.SetActive(false);
+            Time.timeScale = 1f;
+        }
+
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
         if (Input.GetKey(jumpkey) && canJump && grounded)
@@ -174,7 +195,8 @@ public class PlayerController : MonoBehaviour
 
     void jump()
     {
-        playsound();
+        //CloudSave.addjump();
+        //playsound();
         exitingslop = true;
 
         if (crouthing)

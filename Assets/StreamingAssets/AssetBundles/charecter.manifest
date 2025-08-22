@@ -1,0 +1,101 @@
+ManifestFileVersion: 0
+CRC: 3924770024
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 13b3c13b22f46cc2e0c21578b18df874
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 8224c5e0c4756e8e789cbd68c2fafb71
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: 13b3c13b22f46cc2e0c21578b18df874
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 20
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 54
+  Script: {instanceID: 0}
+- Class: 65
+  Script: {instanceID: 0}
+- Class: 74
+  Script: {instanceID: 0}
+- Class: 81
+  Script: {instanceID: 0}
+- Class: 82
+  Script: {instanceID: 0}
+- Class: 91
+  Script: {instanceID: 0}
+- Class: 95
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 3f6dddca6a68802499a0c89021c0e6ab, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 319d2fe34a804e245819465c9505ea59, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 82018dbf9d20fbe4d9227404d6f18a95, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: e501d18bb52cf8c40b1853ca4904654f, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 45e653bab7fb20e499bda25e1b646fea, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: ac0b09e7857660247b1477e93731de29, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 3e94b6cfe2569774a9ffbe3d42fcbfa0, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 3f8b001695d426a4a80475817004449e, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: f4044717213e31446939f7bd49c896ea, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 9384ab8608cdc3d479fe89cd51eed48f, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 4f15b16a64dfa9a4c8b1f9e6ca75ed69, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: d64cf81f0a233c740b1c24dd7af6653f, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 136
+  Script: {instanceID: 0}
+- Class: 195
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers:
+- AssemblyName: Cinemachine
+  ClassName: Cinemachine.AxisState
+- AssemblyName: Cinemachine
+  ClassName: Cinemachine.AxisState/Recentering
+- AssemblyName: Cinemachine
+  ClassName: Cinemachine.CinemachineBlendDefinition
+- AssemblyName: Cinemachine
+  ClassName: Cinemachine.CinemachineBrain/BrainEvent
+- AssemblyName: Cinemachine
+  ClassName: Cinemachine.CinemachineBrain/VcamActivatedEvent
+- AssemblyName: Cinemachine
+  ClassName: Cinemachine.CinemachineFreeLook/Orbit
+- AssemblyName: Cinemachine
+  ClassName: Cinemachine.CinemachineOrbitalTransposer/Heading
+- AssemblyName: Cinemachine
+  ClassName: Cinemachine.CinemachineVirtualCameraBase/TransitionParams
+- AssemblyName: Cinemachine
+  ClassName: Cinemachine.LensSettings
+- AssemblyName: UnityEngine.CoreModule
+  ClassName: UnityEngine.Events.PersistentCallGroup
+Assets:
+- Assets/Prefabs/player.prefab
+- Assets/Prefabs/enemy.prefab
+Dependencies: []

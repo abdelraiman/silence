@@ -1,0 +1,10 @@
+{
+  "shader": "Standard", 
+  "color": {
+    "r": 0.494,
+    "g": 0.455,
+    "b": 1.0, 
+    "a": 1.0
+  },
+  "Smoothness":  0.5
+}

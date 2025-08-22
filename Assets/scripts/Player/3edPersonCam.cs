@@ -9,7 +9,6 @@ public class ThirdPersonCam : MonoBehaviour
     public Transform player;
     public Transform playerobj;
     public Transform combatlook;
-    
     public Rigidbody rb;
     
     public float rotationspeed;
