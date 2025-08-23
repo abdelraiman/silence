@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641275, b: 0.5748171, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -181,9 +181,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 101597611}
-  - component: {fileID: 101597610}
-  - component: {fileID: 101597609}
-  - component: {fileID: 101597608}
   - component: {fileID: 101597607}
   - component: {fileID: 101597604}
   m_Layer: 0
@@ -254,58 +251,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &101597608
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 101597603}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d64cf81f0a233c740b1c24dd7af6653f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &101597609
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 101597603}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f6dddca6a68802499a0c89021c0e6ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  curentstate: 
-  player: {fileID: 0}
-  Attackdistance: 4
-  paath: {fileID: 0}
-  sightdistance: 50
-  fov: 60
-  eyehight: 0
-  sawplayer: 0
-  FileName: ceeday-huh-sound-effect.wav
-  FolderName: audio
-  audioSource: {fileID: 0}
---- !u!114 &101597610
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 101597603}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f15b16a64dfa9a4c8b1f9e6ca75ed69, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  anim: {fileID: 453912779}
-  dead: 0
-  GameObject: {fileID: 0}
-  delaytime: 10
-  eenemy: {fileID: 0}
 --- !u!4 &101597611
 Transform:
   m_ObjectHideFlags: 0
@@ -3127,37 +3072,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3293540050717584231}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.07447082, y: 0.74681437, z: -0.08486069, w: 0.6553787}
-  m_LocalPosition: {x: -0.000005722046, y: 0, z: -0.000011444092}
+  m_LocalRotation: {x: 0.07447092, y: 0.74681365, z: -0.0848606, w: 0.65537953}
+  m_LocalPosition: {x: -0.000005722046, y: -0.00000011920929, z: -0.000009536743}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 728279208651934752}
   m_Father: {fileID: 7255995924491663268}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1232700350274281710
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2646122207850132992}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f6dddca6a68802499a0c89021c0e6ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  curentstate: 
-  player: {fileID: 0}
-  Attackdistance: 4
-  paath: {fileID: 0}
-  sightdistance: 50
-  fov: 60
-  eyehight: 0
-  sawplayer: 0
-  FileName: ceeday-huh-sound-effect.wav
-  FolderName: audio
-  audioSource: {fileID: 0}
 --- !u!23 &1258221377880450751
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3355,18 +3277,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2460009142781972023
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2646122207850132992}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d64cf81f0a233c740b1c24dd7af6653f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!33 &2508607406356336098
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -3430,9 +3340,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7977292309092639647}
-  - component: {fileID: 8937865952969600555}
-  - component: {fileID: 1232700350274281710}
-  - component: {fileID: 2460009142781972023}
   - component: {fileID: 1877974551}
   - component: {fileID: 1877974553}
   m_Layer: 0
@@ -3546,8 +3453,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8616481211726477127}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.07447082, y: 0.74681437, z: -0.0848607, w: 0.65537864}
-  m_LocalPosition: {x: 4.579788, y: 1.6599998, z: -17.817783}
+  m_LocalRotation: {x: 0.07447093, y: 0.74681365, z: -0.08486061, w: 0.6553795}
+  m_LocalPosition: {x: 4.5797853, y: 1.66, z: -17.817799}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3694,8 +3601,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3828682912395618505}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.057496477, y: 0.74875927, z: -0.06551815, w: 0.6570854}
-  m_LocalPosition: {x: -0.000005722046, y: 0, z: -0.000011444092}
+  m_LocalRotation: {x: 0.057496548, y: 0.74875844, z: -0.06551806, w: 0.6570864}
+  m_LocalPosition: {x: -0.000005722046, y: -0.00000011920929, z: -0.000009536743}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4551,7 +4458,7 @@ Transform:
   m_GameObject: {fileID: 7608867756524637116}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.579788, y: 1.6599998, z: -17.817783}
+  m_LocalPosition: {x: 4.5797853, y: 1.66, z: -17.817799}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4757,8 +4664,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5154220207152164795}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.09148679, y: 0.7443553, z: -0.10425062, w: 0.6532206}
-  m_LocalPosition: {x: -0.000012397766, y: 0, z: -0.000022888184}
+  m_LocalRotation: {x: 0.091486886, y: 0.74435455, z: -0.10425052, w: 0.65322155}
+  m_LocalPosition: {x: -0.000009536743, y: -0.00000011920929, z: -0.000019073486}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4947,23 +4854,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.0000001, y: 0.99999994, z: 1.0000001}
   m_Center: {x: 0.0000076293945, y: 0, z: 0.0000076293945}
---- !u!114 &8937865952969600555
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2646122207850132992}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f15b16a64dfa9a4c8b1f9e6ca75ed69, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  anim: {fileID: 6083496921971681266}
-  dead: 0
-  GameObject: {fileID: 0}
-  delaytime: 10
-  eenemy: {fileID: 0}
 --- !u!114 &9015235977327283477
 MonoBehaviour:
   m_ObjectHideFlags: 3
