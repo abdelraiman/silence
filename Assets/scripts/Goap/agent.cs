@@ -506,7 +506,7 @@ public class GoapAgent : MonoBehaviour
             stamina += !movementState.HasPath ? 5f : (movementState.HasPath ? -Random.Range(1, 5) : 0);
             stamina = Mathf.Clamp(stamina, 0, 100);
 
-            health -= .2f;
+            health -= .50f;
             health = Mathf.Clamp(health, 0, 100);
         }
     }
