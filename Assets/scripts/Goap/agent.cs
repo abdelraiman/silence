@@ -458,17 +458,16 @@ public class GoapAgent : MonoBehaviour
 
     void UpdateStats()
     {
-        // Stamina adjustment
-        stamina += !movementState.HasPath ? 5f : (movementState.HasPath ? -Random.Range(1, 5) : 0);
-        stamina = Mathf.Clamp(stamina, 0, 100);
+        
 
         if (role == AgentRole.Survivor)
         {
-            // Health decay over time
-            health -= 2f * Time.deltaTime;
+            stamina += !movementState.HasPath ? 5f : (movementState.HasPath ? -Random.Range(1, 5) : 0);
+            stamina = Mathf.Clamp(stamina, 0, 100);
+
+            health -= 2f;
             health = Mathf.Clamp(health, 0, 100);
 
-            // Automatically eat meat if health is 50 or below
             if (health <= 50 && meatCount > 0)
             {
                 EatMeat();
@@ -637,8 +636,8 @@ public class GoapAgent : MonoBehaviour
     }
     void EatMeat()
     {
-        meatCount--; // Consume one meat
-        health = Mathf.Min(health + 30, 100); // Regain 30 HP, clamp to 100
+        meatCount--;
+        health = Mathf.Min(health + 30, 100);
         Debug.Log($"[GOAP][{role}] Ate meat. Health now: {health}, meat left: {meatCount}");
     }
 

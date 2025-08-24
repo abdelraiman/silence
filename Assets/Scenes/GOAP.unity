@@ -3217,9 +3217,9 @@ MonoBehaviour:
   moveSpeed: 5
   FireTimer: 10
   health: 100
-  stamina: 11
+  stamina: 100
   woodCount: 0
-  fireplaceWood: 0
+  fireplaceWood: 6
   meatCount: 0
   handoffRadius: 5
   survivorRef: {fileID: 0}
@@ -4232,7 +4232,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3293540050717584231}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0744747, y: 0.7467845, z: -0.08485731, w: 0.65541273}
+  m_LocalRotation: {x: 0.07447521, y: 0.7467806, z: -0.08485684, w: 0.6554172}
   m_LocalPosition: {x: -0.00000667572, y: -0.00000011920929, z: -0.000009536743}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4613,8 +4613,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8616481211726477127}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.07447471, y: 0.7467846, z: -0.08485733, w: 0.65541255}
-  m_LocalPosition: {x: 4.579705, y: 1.6599998, z: -17.818415}
+  m_LocalRotation: {x: 0.07447522, y: 0.7467806, z: -0.08485685, w: 0.6554172}
+  m_LocalPosition: {x: 4.5796957, y: 1.66, z: -17.818499}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4898,7 +4898,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3828682912395618505}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.057499465, y: 0.7487293, z: -0.065515526, w: 0.65711945}
+  m_LocalRotation: {x: 0.05749987, y: 0.7487253, z: -0.06551519, w: 0.6571241}
   m_LocalPosition: {x: -0.00000667572, y: -0.00000011920929, z: -0.000009536743}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5755,7 +5755,7 @@ Transform:
   m_GameObject: {fileID: 7608867756524637116}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.579705, y: 1.6599998, z: -17.818415}
+  m_LocalPosition: {x: 4.5796957, y: 1.66, z: -17.818499}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5961,8 +5961,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5154220207152164795}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.09149152, y: 0.7443255, z: -0.10424647, w: 0.65325457}
-  m_LocalPosition: {x: -0.000011444092, y: -0.00000023841858, z: -0.000017166138}
+  m_LocalRotation: {x: 0.09149216, y: 0.74432164, z: -0.104245886, w: 0.6532591}
+  m_LocalPosition: {x: -0.000012397766, y: 0, z: -0.000019073486}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
