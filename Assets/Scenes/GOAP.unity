@@ -218,7 +218,8 @@ MonoBehaviour:
   stamina: 100
   woodCount: 0
   fireplaceWood: 0
-  meatCount: 0
+  RawMeat: 0
+  CookedMeat: 0
   handoffRadius: 5
   survivorRef: {fileID: 0}
   allPreconditionsMet: 1
@@ -318,7 +319,8 @@ MonoBehaviour:
   stamina: 100
   woodCount: 0
   fireplaceWood: 0
-  meatCount: 0
+  RawMeat: 0
+  CookedMeat: 0
   handoffRadius: 5
   survivorRef: {fileID: 0}
   allPreconditionsMet: 1
@@ -362,8 +364,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 105198832}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.005034783, y: 0.6804481, z: 0.0016492176, w: -0.7327772}
-  m_LocalPosition: {x: 24.86, y: -0.09, z: 41.08}
+  m_LocalRotation: {x: 0.004752501, y: 0.99883056, z: -0.0023415175, w: -0.04805655}
+  m_LocalPosition: {x: 25.75, y: -0.06, z: 48.31}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -371,7 +373,7 @@ Transform:
   - {fileID: 1385904297}
   - {fileID: 1665843468}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -0.551, y: 274.24, z: 0.254}
+  m_LocalEulerAnglesHint: {x: 0.242, y: 185.51, z: 0.557}
 --- !u!1 &112596529
 GameObject:
   m_ObjectHideFlags: 0
@@ -697,7 +699,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 03add3b8ee7313546a90ad290be94b6b, type: 2}
+  - {fileID: 2100000, guid: 8a0f0408b0989fa47b4e8f6cce083bc1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -820,8 +822,8 @@ Transform:
   m_GameObject: {fileID: 591799581}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 24.6, y: 1.43, z: 39.19}
-  m_LocalScale: {x: 2.6804, y: 1.96, z: 2.3572}
+  m_LocalPosition: {x: 24.6, y: 1, z: 39.19}
+  m_LocalScale: {x: 2.6804, y: 0.96, z: 2.3572}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1703583044}
@@ -2647,8 +2649,8 @@ Transform:
   m_GameObject: {fileID: 1677897982}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 39.1197, y: 1.43, z: 0.7315}
-  m_LocalScale: {x: 2.6804, y: 1.96, z: 2.3572}
+  m_LocalPosition: {x: 39.1197, y: 1.2, z: 0.7315}
+  m_LocalScale: {x: 2.6804, y: 1.28, z: 2.3572}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1601540855}
@@ -3220,7 +3222,8 @@ MonoBehaviour:
   stamina: 100
   woodCount: 0
   fireplaceWood: 6
-  meatCount: 0
+  RawMeat: 0
+  CookedMeat: 0
   handoffRadius: 5
   survivorRef: {fileID: 0}
   allPreconditionsMet: 1
@@ -4232,8 +4235,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3293540050717584231}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.07447521, y: 0.7467806, z: -0.08485684, w: 0.6554172}
-  m_LocalPosition: {x: -0.00000667572, y: -0.00000011920929, z: -0.000009536743}
+  m_LocalRotation: {x: 0.07447731, y: 0.7467643, z: -0.084855005, w: 0.6554356}
+  m_LocalPosition: {x: -0.0000076293945, y: -0.00000011920929, z: -0.0000076293945}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4613,8 +4616,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8616481211726477127}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.07447522, y: 0.7467806, z: -0.08485685, w: 0.6554172}
-  m_LocalPosition: {x: 4.5796957, y: 1.66, z: -17.818499}
+  m_LocalRotation: {x: 0.07447729, y: 0.7467643, z: -0.08485501, w: 0.6554356}
+  m_LocalPosition: {x: 4.579649, y: 1.66, z: -17.81884}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4898,8 +4901,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3828682912395618505}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.05749987, y: 0.7487253, z: -0.06551519, w: 0.6571241}
-  m_LocalPosition: {x: -0.00000667572, y: -0.00000011920929, z: -0.000009536743}
+  m_LocalRotation: {x: 0.057501476, y: 0.748709, z: -0.06551375, w: 0.65714246}
+  m_LocalPosition: {x: -0.0000076293945, y: -0.00000011920929, z: -0.0000076293945}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5755,7 +5758,7 @@ Transform:
   m_GameObject: {fileID: 7608867756524637116}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.5796957, y: 1.66, z: -17.818499}
+  m_LocalPosition: {x: 4.579649, y: 1.66, z: -17.81884}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5961,8 +5964,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5154220207152164795}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.09149216, y: 0.74432164, z: -0.104245886, w: 0.6532591}
-  m_LocalPosition: {x: -0.000012397766, y: 0, z: -0.000019073486}
+  m_LocalRotation: {x: 0.09149475, y: 0.7443055, z: -0.10424367, w: 0.65327746}
+  m_LocalPosition: {x: -0.000014305115, y: -0.00000011920929, z: -0.000015258789}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

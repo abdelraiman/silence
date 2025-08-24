@@ -2,8 +2,6 @@
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using static GoapAgent;
-using static PlayerController;
 
 public class GoapAgent : MonoBehaviour
 {
@@ -21,7 +19,7 @@ public class GoapAgent : MonoBehaviour
     [SerializeField] Transform meatLocation;
 
     [Header("Movement")]
-    [SerializeField] Transform mover;       
+    [SerializeField] Transform mover;
     [SerializeField] float moveSpeed = 10f;
     MovementState movementState = new();
     Rigidbody rb;
@@ -32,7 +30,8 @@ public class GoapAgent : MonoBehaviour
     public float stamina = 100;
     public int woodCount = 0;
     public int fireplaceWood = 0;
-    public int meatCount = 0;
+    public int RawMeat = 0;
+    public int CookedMeat = 0;
     [SerializeField] float handoffRadius = 5f;
 
     CountdownTimer statsTimer;
@@ -58,7 +57,7 @@ public class GoapAgent : MonoBehaviour
 
     public bool allPreconditionsMet = true;
     public bool FireInFirePlace = true;
-    public enum AgentRole { Survivor, Woodworker, Butcher  }
+    public enum AgentRole { Survivor, Woodworker, Butcher }
 
     [Header("Role Settings")]
     [SerializeField] AgentRole role = AgentRole.Survivor;
@@ -83,13 +82,13 @@ public class GoapAgent : MonoBehaviour
         }
         gFactory = UnityServiceLocator.ServiceLocator.Global.Get<GoapFactory>();
         gPlanner = gFactory.CreatePlanner();
-        
+
 
         if (CompareTag("Survivor"))
         {
             role = AgentRole.Survivor;
         }
-        
+
         if (CompareTag("Woodworker"))
         {
             role = AgentRole.Woodworker;
@@ -130,20 +129,26 @@ public class GoapAgent : MonoBehaviour
         factory.AddBelief("AgentMoving", () => movementState.HasPath);
 
         if (role == AgentRole.Survivor)
-        {
-            factory.AddBelief("AgentHealthLow", () => health < 30);
-            factory.AddBelief("AgentIsHealthy", () => health >= 50);
-            factory.AddBelief("AgentStaminaLow", () => stamina < 10);
-            factory.AddBelief("AgentOutofStamina", () => stamina < 10);
-            factory.AddBelief("AgentIsRested", () => stamina >= 50);
+        {   //----------------------------stats--------------------------------------------
+            factory.AddBelief("AgentHealthLow", () => health <= 30);
+            factory.AddBelief("AgentIsHealthy", () => health >= 60);
 
+            factory.AddBelief("AgentStaminaLow", () => stamina < 10);
+            factory.AddBelief("AgentOutofStamina", () => stamina <= 1);
+            factory.AddBelief("AgentIsRested", () => stamina >= 50);
+            //----------------------------wood--------------------------------------------
             factory.AddBelief("HasAnyWood", () => woodCount >= 1);
             factory.AddBelief("HasAtLeast3Wood", () => woodCount >= 3);
             factory.AddBelief("FireplaceHasAtLeast3Wood", () => fireplaceWood >= 3);
+            factory.AddBelief("FirePlaceHasWood", () => fireplaceWood >= 1);
             factory.AddBelief("NeedsWood", () => fireplaceWood <= 1);
-
             factory.AddLocationBelief("AgentAtWoodShop", 5f, woodShopCounter_Survivor);
+            //----------------------------fireplace--------------------------------------------
             factory.AddLocationBelief("AgentAtFireplace", 3f, firePlace);
+            //----------------------------butcher--------------------------------------------
+            factory.AddBelief("HasRawMeat", () => RawMeat >= 1);
+            factory.AddBelief("HasCookedMeat", () => CookedMeat >= 1);
+            factory.AddLocationBelief("AgentAtButcher", 5f, butcherShop_Survivor);
         }
         if (role == AgentRole.Woodworker)
         {
@@ -153,9 +158,9 @@ public class GoapAgent : MonoBehaviour
             factory.AddLocationBelief("AgentAtWoodShop", 5f, woodShopCounter_Worker);
             factory.AddLocationBelief("AgentAtForest", 3f, forestPosition);
 
-            factory.AddBelief("SurvivorAtWoodShop",() => Vector3.Distance(survivorRef.transform.position, woodShopCounter_Survivor.position) < 5f);
+            factory.AddBelief("SurvivorAtWoodShop", () => Vector3.Distance(survivorRef.transform.position, woodShopCounter_Survivor.position) < 5f);
 
-            factory.AddBelief("SurvivorNeedsWood",() => survivorRef.woodCount < 3);
+            factory.AddBelief("SurvivorNeedsWood", () => survivorRef.woodCount < 3);
 
             factory.AddBelief("RequestActiveAtCounter",
                 () => beliefs["SurvivorAtWoodShop"].Evaluate()
@@ -166,8 +171,7 @@ public class GoapAgent : MonoBehaviour
         }
         if (role == AgentRole.Butcher)
         {
-            factory.AddBelief("HasAnyMeat", () => meatCount > 0);
-            factory.AddBelief("HasAtLeast3Meat", () => meatCount >= 3);
+            factory.AddBelief("HasRawMeat", () => RawMeat >= 1);
 
             factory.AddLocationBelief("AgentAtButcherShop", 5f, butcherShop_Worker);
             factory.AddLocationBelief("AgentAtMeatLocation", 3f, meatLocation);
@@ -175,14 +179,14 @@ public class GoapAgent : MonoBehaviour
             factory.AddBelief("SurvivorAtButcherShop",
                 () => Vector3.Distance(survivorRef.transform.position, butcherShop_Survivor.position) < 5f);
 
-            factory.AddBelief("SurvivorNeedsMeat", () => survivorRef.meatCount < 3);
+            factory.AddBelief("SurvivorNeedsMeat", () => survivorRef.RawMeat <= 0);
 
             factory.AddBelief("RequestActiveAtButcherCounter",
                 () => beliefs["SurvivorAtButcherShop"].Evaluate()
                 && beliefs["SurvivorNeedsMeat"].Evaluate());
 
             factory.AddBelief("SurvivorStockedMeat",
-                () => survivorRef != null && survivorRef.meatCount >= 3);
+                () => survivorRef != null && survivorRef.RawMeat >= 1);
         }
 
     }
@@ -198,12 +202,13 @@ public class GoapAgent : MonoBehaviour
         {
 
             actions.Add(new AgentAction.Builder("Rest")
-                .WithStrategy(new IdleStrategy(5))
+                .WithStrategy(new TimedCallbackStrategy(3f,
+                () => health = Mathf.Clamp(health = 100, 0, 100)))
                 .AddPrecondition(beliefs["AgentIdle"])
                 .AddEffect(beliefs["AgentIsRested"])
                 .Build());
-           // -----------------------------------------WOOD-------------------------------------------------//
-            
+            // -----------------------------------------WOOD-------------------------------------------------//
+
             actions.Add(new AgentAction.Builder("MoveToWoodShop")
                 .WithStrategy(new MoveStrategy(mover, () => woodShopCounter_Survivor.position, movementState, moveSpeed))
                 .AddPrecondition(beliefs["NeedsWood"])
@@ -212,8 +217,8 @@ public class GoapAgent : MonoBehaviour
 
             actions.Add(new AgentAction.Builder("WaitForWood")
                 .WithStrategy(new RepeatCallbackUntilStrategy(2f,
-                    () => woodCount >= 3,     
-                    () => {}
+                    () => woodCount >= 3,
+                    () => { }
                 ))
                 .AddPrecondition(beliefs["AgentAtWoodShop"])
                 .AddPrecondition(beliefs["NeedsWood"])
@@ -236,7 +241,56 @@ public class GoapAgent : MonoBehaviour
                 .AddPrecondition(beliefs["HasAnyWood"])
                 .AddPrecondition(beliefs["HasAtLeast3Wood"])
                 .AddEffect(beliefs["FireplaceHasAtLeast3Wood"])
+                .AddEffect(beliefs["FirePlaceHasWood"])
                 .Build());
+            // -----------------------------------------BUTCHER-------------------------------------------------//
+            actions.Add(new AgentAction.Builder("MoveToButcher")
+            .WithStrategy(new MoveStrategy(mover, () => butcherShop_Survivor.position, movementState, moveSpeed))
+            .AddPrecondition(beliefs["AgentHealthLow"])
+            .AddEffect(beliefs["AgentAtButcher"])
+            .Build());
+
+            actions.Add(new AgentAction.Builder("WaitForMeat")
+                .WithStrategy(new RepeatCallbackUntilStrategy(2f,
+                    () => RawMeat >= 1,
+                    () => { }
+                ))
+                .AddPrecondition(beliefs["AgentAtButcher"])
+                .AddPrecondition(beliefs["AgentHealthLow"])
+                .AddEffect(beliefs["HasRawMeat"])
+                .Build());
+
+            actions.Add(new AgentAction.Builder("MoveToFireplace")
+                .WithStrategy(new MoveStrategy(mover, () => firePlace.position, movementState, moveSpeed))
+                .AddPrecondition(beliefs["HasRawMeat"])
+                .AddEffect(beliefs["AgentAtFireplace"])
+                .Build());
+
+            actions.Add(new AgentAction.Builder("CookRawMeat")
+                .WithStrategy(new TimedCallbackStrategy(4f,
+                () =>
+                {
+                    RawMeat--;
+                    CookedMeat++;
+                }))
+                .AddPrecondition(beliefs["HasRawMeat"])
+                .AddPrecondition(beliefs["FirePlaceHasWood"])
+                .AddPrecondition(beliefs["AgentAtFireplace"])
+                .AddEffect(beliefs["HasCookedMeat"])
+                .Build());
+
+            actions.Add(new AgentAction.Builder("Eat")
+                .WithStrategy(new TimedCallbackStrategy(4f,
+                () =>
+                {
+                    CookedMeat--;
+                    health = 100;
+                }))
+                .AddPrecondition(beliefs["HasCookedMeat"])
+                .AddEffect(beliefs["AgentIsHealthy"])
+                .Build());
+
+
         }
 
         if (role == AgentRole.Woodworker)
@@ -301,6 +355,7 @@ public class GoapAgent : MonoBehaviour
                 .AddEffect(beliefs["SurvivorStocked3"])
                 .Build());
         }
+
         if (role == AgentRole.Butcher)
         {
             actions.Add(new AgentAction.Builder("ReturnToButcherShop")
@@ -322,43 +377,29 @@ public class GoapAgent : MonoBehaviour
                 .Build());
 
             actions.Add(new AgentAction.Builder("CollectMeatUntilThree")
-                .WithStrategy(new RepeatCallbackUntilStrategy(1f,
-                    () => meatCount >= 3,
-                    () => meatCount = Mathf.Min(meatCount + 1, 4)))
+               .WithStrategy(new TimedCallbackStrategy(3f,
+                () => RawMeat++))
                 .AddPrecondition(beliefs["AgentAtMeatLocation"])
-                .AddEffect(beliefs["HasAtLeast3Meat"])
-                .AddEffect(beliefs["HasAnyMeat"])
+                .AddEffect(beliefs["HasRawMeat"])
                 .Build());
 
             actions.Add(new AgentAction.Builder("ReturnToButcherCounterWithMeat")
                 .WithStrategy(new MoveStrategy(mover, () => butcherShop_Worker.position, movementState, moveSpeed))
-                .AddPrecondition(beliefs["HasAtLeast3Meat"])
+                .AddPrecondition(beliefs["HasRawMeat"])
                 .AddEffect(beliefs["AgentAtButcherShop"])
                 .Build());
 
             actions.Add(new AgentAction.Builder("GiveMeatToSurvivor")
-                .WithStrategy(new RepeatCallbackUntilStrategy(1f,
-                    () => meatCount == 0,
-                    () =>
-                    {
-                        if (survivorRef == null || meatCount <= 0) return;
+                .WithStrategy(new TimedCallbackStrategy(2f,
+                () =>
+                {
+                    RawMeat--;
+                    survivorRef.RawMeat++;
+                    })
+                {
 
-                        bool survivorInPlace = Vector3.Distance(
-                            survivorRef.transform.position, butcherShop_Survivor.position) < handoffRadius;
-
-                        bool butcherInPlace = Vector3.Distance(
-                            transform.position, butcherShop_Worker.position) < handoffRadius;
-
-                        bool closeToEachOther = Vector3.Distance(
-                            transform.position, survivorRef.transform.position) < handoffRadius;
-
-                        if ((survivorInPlace && butcherInPlace) || closeToEachOther)
-                        {
-                            meatCount--;
-                            survivorRef.meatCount = Mathf.Min(survivorRef.meatCount + 1, 3);
-                        }
-                    }))
-                .AddPrecondition(beliefs["HasAnyMeat"])
+                })
+                .AddPrecondition(beliefs["HasRawMeat"])
                 .AddPrecondition(beliefs["AgentAtButcherShop"])
                 .AddEffect(beliefs["SurvivorStockedMeat"])
                 .Build());
@@ -388,7 +429,7 @@ public class GoapAgent : MonoBehaviour
                 .Build());
 
             goals.Add(new AgentGoal.Builder("StockFireplaceTWhenLow")
-                .WithPriority(2)
+                .WithPriority(3)
                 .WithDesiredEffect(beliefs["FireplaceHasAtLeast3Wood"])
                 .Build());
         }
@@ -412,7 +453,7 @@ public class GoapAgent : MonoBehaviour
                 .WithPriority(1)
                 .WithDesiredEffect(beliefs["AgentAtButcherShop"])
                 .Build());
-           
+
 
             goals.Add(new AgentGoal.Builder("FulfillSurvivorMeatRequest")
                 .WithPriority(3)
@@ -443,7 +484,7 @@ public class GoapAgent : MonoBehaviour
                 firewoodBurnTimer.Start();
 
             };
-                firewoodBurnTimer.Start();
+            firewoodBurnTimer.Start();
         }
     }
 
@@ -458,20 +499,15 @@ public class GoapAgent : MonoBehaviour
 
     void UpdateStats()
     {
-        
+
 
         if (role == AgentRole.Survivor)
         {
             stamina += !movementState.HasPath ? 5f : (movementState.HasPath ? -Random.Range(1, 5) : 0);
             stamina = Mathf.Clamp(stamina, 0, 100);
 
-            health -= 2f;
+            health -= 1f;
             health = Mathf.Clamp(health, 0, 100);
-
-            if (health <= 50 && meatCount > 0)
-            {
-                EatMeat();
-            }
         }
     }
 
@@ -492,12 +528,12 @@ public class GoapAgent : MonoBehaviour
 
     void Update()
     {
-        if(role == AgentRole.Survivor)
+        if (role == AgentRole.Survivor)
         {
             statsTimer.Tick(Time.deltaTime);
             if (fireplaceWood > 0)
             {
-            firewoodBurnTimer.Tick( Time.deltaTime);
+                firewoodBurnTimer.Tick(Time.deltaTime);
             }
         }
         if (currentAction == null)
@@ -623,7 +659,7 @@ public class GoapAgent : MonoBehaviour
     }
     public void ReceiveMeat(int amount = 1)
     {
-        meatCount = Mathf.Clamp(meatCount + amount, 0, 3);
+        RawMeat = Mathf.Clamp(RawMeat + amount, 0, 3);
     }
     void ShowChatBubble(string message)
     {
@@ -633,12 +669,6 @@ public class GoapAgent : MonoBehaviour
             chatBubbleText.text = message;
             bubbleTimer = bubbleDuration;
         }
-    }
-    void EatMeat()
-    {
-        meatCount--;
-        health = Mathf.Min(health + 30, 100);
-        Debug.Log($"[GOAP][{role}] Ate meat. Health now: {health}, meat left: {meatCount}");
     }
 
 
