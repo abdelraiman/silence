@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641275, b: 0.5748171, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -212,6 +212,9 @@ MonoBehaviour:
   woodShopCounter_Worker: {fileID: 1907208964}
   firePlace: {fileID: 1813063831}
   forestPosition: {fileID: 63104672}
+  butcherShop_Survivor: {fileID: 1703583044}
+  butcherShop_Worker: {fileID: 2123591471}
+  meatLocation: {fileID: 2122480267}
   mover: {fileID: 0}
   moveSpeed: 5
   FireTimer: 10
@@ -219,6 +222,7 @@ MonoBehaviour:
   stamina: 100
   woodCount: 0
   fireplaceWood: 0
+  meatCount: 0
   handoffRadius: 5
   survivorRef: {fileID: 0}
   allPreconditionsMet: 1
@@ -309,6 +313,9 @@ MonoBehaviour:
   woodShopCounter_Worker: {fileID: 1907208964}
   firePlace: {fileID: 1813063831}
   forestPosition: {fileID: 63104672}
+  butcherShop_Survivor: {fileID: 1703583044}
+  butcherShop_Worker: {fileID: 2123591471}
+  meatLocation: {fileID: 2122480267}
   mover: {fileID: 0}
   moveSpeed: 5
   FireTimer: 10
@@ -316,6 +323,7 @@ MonoBehaviour:
   stamina: 100
   woodCount: 0
   fireplaceWood: 0
+  meatCount: 0
   handoffRadius: 5
   survivorRef: {fileID: 0}
   allPreconditionsMet: 1
@@ -3870,6 +3878,9 @@ MonoBehaviour:
   woodShopCounter_Worker: {fileID: 1907208964}
   firePlace: {fileID: 530506267}
   forestPosition: {fileID: 1951412873}
+  butcherShop_Survivor: {fileID: 1703583044}
+  butcherShop_Worker: {fileID: 2123591471}
+  meatLocation: {fileID: 2122480267}
   mover: {fileID: 0}
   moveSpeed: 5
   FireTimer: 10
@@ -3877,6 +3888,7 @@ MonoBehaviour:
   stamina: 100
   woodCount: 0
   fireplaceWood: 0
+  meatCount: 0
   handoffRadius: 5
   survivorRef: {fileID: 0}
   allPreconditionsMet: 1
@@ -5024,8 +5036,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3293540050717584231}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.074471764, y: 0.74680716, z: -0.08485988, w: 0.6553868}
-  m_LocalPosition: {x: -0.0000038146973, y: -0.00000023841858, z: -0.000011444092}
+  m_LocalRotation: {x: 0.074472055, y: 0.74680483, z: -0.0848596, w: 0.65538955}
+  m_LocalPosition: {x: -0.000005722046, y: 0.00000035762787, z: -0.000009536743}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5405,8 +5417,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8616481211726477127}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.074471764, y: 0.7468072, z: -0.08485988, w: 0.65538675}
-  m_LocalPosition: {x: 4.579769, y: 1.6599998, z: -17.817936}
+  m_LocalRotation: {x: 0.07447207, y: 0.74680483, z: -0.084859625, w: 0.6553895}
+  m_LocalPosition: {x: 4.5797625, y: 1.66, z: -17.817984}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5553,8 +5565,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3828682912395618505}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.057497203, y: 0.74875206, z: -0.06551752, w: 0.6570935}
-  m_LocalPosition: {x: -0.0000038146973, y: -0.00000023841858, z: -0.000011444092}
+  m_LocalRotation: {x: 0.057497423, y: 0.74874973, z: -0.065517314, w: 0.6570962}
+  m_LocalPosition: {x: -0.000005722046, y: 0.00000035762787, z: -0.000009536743}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6410,7 +6422,7 @@ Transform:
   m_GameObject: {fileID: 7608867756524637116}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.579769, y: 1.6599998, z: -17.817936}
+  m_LocalPosition: {x: 4.5797625, y: 1.66, z: -17.817984}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6616,8 +6628,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5154220207152164795}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.09148793, y: 0.7443481, z: -0.10424965, w: 0.6532287}
-  m_LocalPosition: {x: -0.000009536743, y: -0.00000035762787, z: -0.000022888184}
+  m_LocalRotation: {x: 0.09148825, y: 0.74434584, z: -0.10424931, w: 0.65323144}
+  m_LocalPosition: {x: -0.000011444092, y: 0.00000059604645, z: -0.000020980835}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
