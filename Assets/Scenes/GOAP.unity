@@ -17859,7 +17859,7 @@ MonoBehaviour:
   meatLocation: {fileID: 2122480267}
   mover: {fileID: 0}
   moveSpeed: 5
-  FireTimer: 10
+  FireTimer: 20
   health: 100
   stamina: 100
   woodCount: 0
