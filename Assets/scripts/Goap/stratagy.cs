@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 public interface IActionStrategy
 {
@@ -15,71 +14,78 @@ public interface IActionStrategy
 
 public class MoveStrategy : IActionStrategy
 {
-        readonly Transform mover;
-        readonly Func<Vector3> destinationFn;
-        readonly MovementState state;
-        readonly float speed;
-        readonly float arriveDistance;
-        readonly float cornerTolerance;
+    readonly Transform mover;
+    readonly Func<Vector3> destinationFn;
+    readonly MovementState state;
+    readonly float speed;
+    readonly float arriveDistance;
+    readonly float cornerTolerance;
 
-        List<Vector3> waypoints;
-        int index;
-        bool started, done;
+    List<Vector3> waypoints;
+    int index;
+    bool started, done;
 
-        public bool CanPerform => true;
-        public bool Complete => done;
+    public bool CanPerform => true;
+    public bool Complete => done;
 
-        public MoveStrategy(Transform mover, Func<Vector3> destinationFn, MovementState state,
-                                 float speed, float arriveDistance = 0.2f, float cornerTolerance = 0.15f)
-        {
-            this.mover = mover;
-            this.destinationFn = destinationFn;
-            this.speed = Mathf.Max(0.01f, speed);
-            this.arriveDistance = arriveDistance;
-            this.cornerTolerance = cornerTolerance;
-        }
+    public MoveStrategy(Transform mover, Func<Vector3> destinationFn, MovementState state,
+                             float speed, float arriveDistance = 0.2f, float cornerTolerance = 0.15f)
+    {
+        this.mover = mover;
+        this.destinationFn = destinationFn;
+        this.state = state;
+        this.speed = Mathf.Max(0.01f, speed);
+        this.arriveDistance = arriveDistance;
+        this.cornerTolerance = cornerTolerance;
+    }
 
-        public void Start()
-        {
-            started = true; done = false; index = 0;
-            var startPos = mover.position;
-            var endPos = destinationFn();
+    public void Start()
+    {
+        started = true; done = false; index = 0;
+        var startPos = mover.position;
+        var endPos = destinationFn();
 
         if (!AStarPathfinder.FindPath(startPos, endPos, out waypoints) || waypoints == null || waypoints.Count == 0)
-            {
-                done = true;
-                return;
-            }
+        {
+            done = true;
+            if (state != null) { state.HasPath = false; state.IsMoving = false; }
+            return;
+        }
+        if (state != null) { state.HasPath = true; state.IsMoving = true; }
+    }
+
+    public void Update(float dt)
+    {
+        if (!started || done) return;
+        if (waypoints == null || index >= waypoints.Count)
+        {
+            done = true; return;
         }
 
-        public void Update(float dt)
+        var target = waypoints[index];
+        var to = target - mover.position;
+        to.y = 0f;
+
+        if (to.sqrMagnitude <= cornerTolerance * cornerTolerance)
         {
-            if (!started || done) return;
-            if (waypoints == null || index >= waypoints.Count)
+            index++;
+            if (index >= waypoints.Count)
             {
-                done = true; return;
-            }
-
-            var target = waypoints[index];
-            var to = target - mover.position;
-            to.y = 0f;
-
-            if (to.sqrMagnitude <= cornerTolerance * cornerTolerance)
-            {
-                index++;
-                if (index >= waypoints.Count)
+                done = Vector3.SqrMagnitude(mover.position - target) <= arriveDistance * arriveDistance;
+                if (done && state != null)
                 {
-                    done = Vector3.SqrMagnitude(mover.position - target) <= arriveDistance * arriveDistance;
+                    state.HasPath = false; state.IsMoving = false;
                 }
-                return;
             }
+            return;
+        }
 
-            var dir = to.normalized;
-            var step = speed * dt;
-            var move = dir * Mathf.Min(step, to.magnitude);
+        var dir = to.normalized;
+        var step = speed * dt;
+        var move = dir * Mathf.Min(step, to.magnitude);
 
-            mover.position += move;
-            if (move != Vector3.zero) mover.forward = dir;
+        mover.position += move;
+        if (move != Vector3.zero) mover.forward = dir;
         if (waypoints != null && waypoints.Count > 1)
         {
             for (int i = 0; i < waypoints.Count - 1; i++)
@@ -94,45 +100,12 @@ public class MoveStrategy : IActionStrategy
         }
     }
 
-        public void Stop() => done = true;
-}
-public class WanderStrategy : IActionStrategy
-{
-    readonly NavMeshAgent agent;
-    readonly float wanderRadius;
-
-    public bool CanPerform => !Complete;
-    public bool Complete => agent.remainingDistance <= 0.2f && !agent.pathPending;
-
-    public WanderStrategy(NavMeshAgent agent, float wanderRadius)
-    {
-        this.agent = agent;
-        this.wanderRadius = wanderRadius;
-    }
-
-    public void Start()
-    {
-        for (int i = 0; i < 5; i++)
-        {
-            Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * wanderRadius;
-            randomDirection.y = 0;
-            Vector3 candidate = agent.transform.position + randomDirection;
-
-            if (NavMesh.SamplePosition(candidate, out NavMeshHit hit, wanderRadius, NavMesh.AllAreas))
-            {
-                agent.isStopped = false;
-                agent.SetDestination(hit.position);
-                return;
-            }
-        }
-    }
-
     public void Stop()
     {
-        if (agent != null && agent.hasPath)
+        done = true;
+        if (state != null)
         {
-            agent.ResetPath();
-            agent.isStopped = true;
+            state.HasPath = false; state.IsMoving = false;
         }
     }
 }
@@ -228,9 +201,9 @@ public class RepeatCallbackUntilStrategy : IActionStrategy
     {
         if (Complete) return;
 
-        onTick?.Invoke();                 
+        onTick?.Invoke();
         if (donePredicate())
-        {           
+        {
             Complete = true;
             return;
         }

@@ -2,6 +2,7 @@
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using static GoapAgent;
 using static PlayerController;
 
 public class GoapAgent : MonoBehaviour
@@ -133,6 +134,7 @@ public class GoapAgent : MonoBehaviour
             factory.AddBelief("AgentHealthLow", () => health < 30);
             factory.AddBelief("AgentIsHealthy", () => health >= 50);
             factory.AddBelief("AgentStaminaLow", () => stamina < 10);
+            factory.AddBelief("AgentOutofStamina", () => stamina < 10);
             factory.AddBelief("AgentIsRested", () => stamina >= 50);
 
             factory.AddBelief("HasAnyWood", () => woodCount >= 1);
@@ -376,17 +378,17 @@ public class GoapAgent : MonoBehaviour
         if (role == AgentRole.Survivor)
         {
             goals.Add(new AgentGoal.Builder("KeepHealthUp")
-                .WithPriority(4)
+                .WithPriority(3)
                 .WithDesiredEffect(beliefs["AgentIsHealthy"])
                 .Build());
 
             goals.Add(new AgentGoal.Builder("KeepStaminaUp")
-                .WithPriority(2)
+                .WithPriority(4)
                 .WithDesiredEffect(beliefs["AgentIsRested"])
                 .Build());
 
             goals.Add(new AgentGoal.Builder("StockFireplaceTWhenLow")
-                .WithPriority(3)
+                .WithPriority(2)
                 .WithDesiredEffect(beliefs["FireplaceHasAtLeast3Wood"])
                 .Build());
         }
@@ -423,7 +425,7 @@ public class GoapAgent : MonoBehaviour
         if (role == AgentRole.Survivor)
         {
             //Debug.LogError($"{role}: starting timers");
-            statsTimer = new CountdownTimer(2f);
+            statsTimer = new CountdownTimer(1f);
             statsTimer.OnTimerStop += () =>
             {
                 //Debug.LogError($"{role}: in update");
@@ -456,9 +458,9 @@ public class GoapAgent : MonoBehaviour
     void UpdateStats()
     {
         //Debug.Log($"{role} updated stats");
-        //stamina += InRangeOf(restingPosition.position, 3f) ? 20 : Random.Range(-1,-10);
+        stamina += !movementState.HasPath ? 5f : (movementState.HasPath ? -Random.Range(1, 5): 0);
         //health += InRangeOf(foodShack.position, 3f) ? 20 : -5;
-        //stamina = Mathf.Clamp(stamina, 0, 100);
+        stamina = Mathf.Clamp(stamina, 0, 100);
         //health = Mathf.Clamp(health, 0, 100);
     }
 
