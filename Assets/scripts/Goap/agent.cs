@@ -11,10 +11,6 @@ public class GoapAgent : MonoBehaviour
     [SerializeField] Sensor attackSensor;
 
     [Header("Known Locations")]
-    [SerializeField] Transform restingPosition;
-    [SerializeField] Transform foodShack;
-    [SerializeField] Transform doorOnePosition;
-    [SerializeField] Transform doorTwoPosition;
     [SerializeField] Transform woodShopCounter_Survivor;
     [SerializeField] Transform woodShopCounter_Worker;
     [SerializeField] Transform firePlace;
@@ -144,10 +140,6 @@ public class GoapAgent : MonoBehaviour
             factory.AddBelief("FireplaceHasAtLeast3Wood", () => fireplaceWood >= 3);
             factory.AddBelief("NeedsWood", () => fireplaceWood <= 1);
 
-            factory.AddLocationBelief("AgentAtDoorOne", 3f, doorOnePosition);
-            factory.AddLocationBelief("AgentAtDoorTwo", 3f, doorTwoPosition);
-            factory.AddLocationBelief("AgentAtRestingPosition", 3f, restingPosition);
-            factory.AddLocationBelief("AgentAtFoodShack", 3f, foodShack);
             factory.AddLocationBelief("AgentAtWoodShop", 5f, woodShopCounter_Survivor);
             factory.AddLocationBelief("AgentAtFireplace", 3f, firePlace);
         }
@@ -198,55 +190,16 @@ public class GoapAgent : MonoBehaviour
 
         actions.Add(new AgentAction.Builder("Relax")
             .WithStrategy(new IdleStrategy(3))
-            .AddEffect(beliefs["Nothing"])
+            .AddEffect(beliefs["AgentIdle"])
             .Build());
-
         if (role == AgentRole.Survivor)
         {
-           // actions.Add(new AgentAction.Builder("Wander Around")
-           //     .WithStrategy(new WanderStrategy(navMeshAgent, 10))
-           //     .AddEffect(beliefs["AgentMoving"])
-           //     .Build());
 
-            actions.Add(new AgentAction.Builder("MoveToEatingPosition")
-                .WithStrategy(new MoveStrategy(mover, () => foodShack.position, movementState, moveSpeed))
-                .AddEffect(beliefs["AgentAtFoodShack"])
-                .Build());
-
-            actions.Add(new AgentAction.Builder("Eat")
+            actions.Add(new AgentAction.Builder("Rest")
                 .WithStrategy(new IdleStrategy(5))
-                .AddPrecondition(beliefs["AgentAtFoodShack"])
-                .AddEffect(beliefs["AgentIsHealthy"])
+                .AddPrecondition(beliefs["AgentIdle"])
+                .AddEffect(beliefs["AgentIsRested"])
                 .Build());
-
-            //actions.Add(new AgentAction.Builder("MoveToDoorOne")
-            //    .WithStrategy(new MoveStrategy(navMeshAgent, () => doorOnePosition.position))
-            //    .AddEffect(beliefs["AgentAtDoorOne"])
-            //    .Build());
-            //
-            //actions.Add(new AgentAction.Builder("MoveToDoorTwo")
-            //    .WithStrategy(new MoveStrategy(navMeshAgent, () => doorTwoPosition.position))
-            //    .AddEffect(beliefs["AgentAtDoorTwo"])
-            //    .Build());
-            //
-            //actions.Add(new AgentAction.Builder("MoveFromDoorOneToRestArea")
-            //    .WithCost(2)
-            //    .WithStrategy(new MoveStrategy(navMeshAgent, () => restingPosition.position))
-            //    .AddPrecondition(beliefs["AgentAtDoorOne"])
-            //    .AddEffect(beliefs["AgentAtRestingPosition"])
-            //    .Build());
-            //
-            //actions.Add(new AgentAction.Builder("MoveFromDoorTwoRestArea")
-            //    .WithStrategy(new MoveStrategy(navMeshAgent, () => restingPosition.position))
-            //    .AddPrecondition(beliefs["AgentAtDoorTwo"])
-            //    .AddEffect(beliefs["AgentAtRestingPosition"])
-            //    .Build());
-            //
-            //actions.Add(new AgentAction.Builder("Rest")
-            //    .WithStrategy(new IdleStrategy(5))
-            //    .AddPrecondition(beliefs["AgentAtRestingPosition"])
-            //    .AddEffect(beliefs["AgentIsRested"])
-            //    .Build());
            // -----------------------------------------WOOD-------------------------------------------------//
             
             actions.Add(new AgentAction.Builder("MoveToWoodShop")
@@ -422,11 +375,6 @@ public class GoapAgent : MonoBehaviour
 
         if (role == AgentRole.Survivor)
         {
-            //goals.Add(new AgentGoal.Builder("Wander")
-            //    .WithPriority(1)
-            //    .WithDesiredEffect(beliefs["AgentMoving"])
-            //    .Build());
-
             goals.Add(new AgentGoal.Builder("KeepHealthUp")
                 .WithPriority(4)
                 .WithDesiredEffect(beliefs["AgentIsHealthy"])
