@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using static PlayerController;
 
@@ -65,8 +66,18 @@ public class GoapAgent : MonoBehaviour
     [Header("Role Settings")]
     [SerializeField] AgentRole role = AgentRole.Survivor;
 
+    [Header("Chat Bubble")]
+    [SerializeField] GameObject chatBubblePrefab;
+    GameObject chatBubbleInstance;
+    TextMeshProUGUI chatBubbleText;
+    [SerializeField] Vector3 bubbleOffset = new Vector3(0, 2f, 0);
+    [SerializeField] float bubbleDuration = 2f;
+    float bubbleTimer = 0f;
+    private string lastActionShown = "";
+
     void Awake()
     {
+
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         if (mover == null)
@@ -95,6 +106,12 @@ public class GoapAgent : MonoBehaviour
         else
         {
             Debug.LogWarning("No Survivor found in the scene!");
+        }
+        if (chatBubblePrefab != null)
+        {
+            chatBubbleInstance = Instantiate(chatBubblePrefab, transform.position + bubbleOffset, Quaternion.identity, transform);
+            chatBubbleText = chatBubbleInstance.GetComponentInChildren<TextMeshProUGUI>();
+            chatBubbleInstance.SetActive(false);
         }
     }
 
@@ -549,6 +566,13 @@ public class GoapAgent : MonoBehaviour
                 {
                     Debug.Log($"[GOAP] [{gameObject.tag}/{role}]Starting action: {currentAction.Name}");
                     currentAction.Start();
+
+                    // --- CHAT BUBBLE DISPLAY ---
+                    if (currentAction.Name != lastActionShown)
+                    {
+                        ShowChatBubble(currentAction.Name);
+                        lastActionShown = currentAction.Name;
+                    }
                 }
                 else
                 {
@@ -576,6 +600,30 @@ public class GoapAgent : MonoBehaviour
                 {
                     lastGoal = currentGoal;
                     currentGoal = null;
+                }
+            }
+        }
+        // --- CHAT BUBBLE TIMER ---
+        if (chatBubbleInstance != null)
+        {
+            // Make the bubble follow the agent
+            chatBubbleInstance.transform.position = transform.position + bubbleOffset;
+
+            // Update bubble text if currentAction changed
+            if (currentAction != null && currentAction.Name != lastActionShown)
+            {
+                ShowChatBubble(currentAction.Name);
+                lastActionShown = currentAction.Name;
+            }
+
+            // Countdown timer for hiding bubble
+            if (chatBubbleInstance.activeSelf)
+            {
+                bubbleTimer -= Time.deltaTime;
+                if (bubbleTimer <= 0f)
+                {
+                    chatBubbleInstance.SetActive(false);
+                    lastActionShown = ""; // Reset for next action
                 }
             }
         }
@@ -614,6 +662,15 @@ public class GoapAgent : MonoBehaviour
     public void ReceiveMeat(int amount = 1)
     {
         meatCount = Mathf.Clamp(meatCount + amount, 0, 3);
+    }
+    void ShowChatBubble(string message)
+    {
+        if (chatBubbleInstance != null)
+        {
+            chatBubbleInstance.SetActive(true);
+            chatBubbleText.text = message;
+            bubbleTimer = bubbleDuration;
+        }
     }
 
 
