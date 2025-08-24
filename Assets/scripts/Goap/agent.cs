@@ -412,6 +412,7 @@ public class GoapAgent : MonoBehaviour
                 .WithPriority(1)
                 .WithDesiredEffect(beliefs["AgentAtButcherShop"])
                 .Build());
+           
 
             goals.Add(new AgentGoal.Builder("FulfillSurvivorMeatRequest")
                 .WithPriority(3)
